@@ -31,24 +31,24 @@ import "./index.css";
 
 export default function App() {
   return (
-    <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
-            <Route index element={<Home />} />
-            <Route path="login" element={<Login />} />
-            <Route path="user-area" element={<UserAreaLayout />}>
-              <Route path="trackers" element={<TrackersView />} />
-              <Route path="tracker">
-                <Route path=":trackerId" element={<TrackerView />} />
-                <Route path="new" element={<TrackerView />} />
-              </Route>
+    // <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
+          <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="user-area" element={<UserAreaLayout />}>
+            <Route path="trackers" element={<TrackersView />} />
+            <Route path="tracker">
+              <Route path=":trackerId" element={<TrackerView />} />
+              <Route path="new" element={<TrackerView />} />
             </Route>
           </Route>
-          {/* <Route path="*" element={<ErrorPage />} /> */}
-        </Routes>
-      </BrowserRouter>
-    </React.StrictMode>
+        </Route>
+        {/* <Route path="*" element={<ErrorPage />} /> */}
+      </Routes>
+    </BrowserRouter>
+    // </React.StrictMode>
   );
 }
 

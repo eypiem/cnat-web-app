@@ -11,6 +11,7 @@ export default function UserAreaLayout() {
   const userId = "c@c.com";
 
   const token = getCookie(jwt_cookie);
+  console.log(`UserAreaLayout: is logged in: ${hasJWT()}`);
 
   return hasJWT() ? (
     <>

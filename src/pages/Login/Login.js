@@ -11,20 +11,22 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
 
-  console.log(isLoggedIn);
+  console.log(`Login: is logged in: ${isLoggedIn || hasJWT()}`);
 
-  if (isLoggedIn) {
+  if (isLoggedIn || hasJWT()) {
     return <Navigate to="/user-area/trackers" replace={true} />;
   }
 
   return (
     <>
-      {/* {isLoggedIn && <Navigate to="/user-area/trackers" replace={true} />} */}
+      {/* {(isLoggedIn || hasJWT()) && (
+        <Navigate to="/user-area/trackers" replace={true} />
+      )} */}
       <form
         className="Login"
         onSubmit={(e) => login(e, setIsLoggedIn, setErrorMsg, setIsloading)}
       >
-        <div class="input-group flex-nowrap">
+        <div className="input-group flex-nowrap">
           <input
             id="email"
             type="email"
@@ -34,7 +36,7 @@ export default function Login() {
             aria-describedby="addon-wrapping"
           />
         </div>
-        <div class="input-group flex-nowrap">
+        <div className="input-group flex-nowrap">
           <input
             id="password"
             type="password"
@@ -46,9 +48,7 @@ export default function Login() {
         </div>
         {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
         {isLoading ? (
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
+          <div className="spinner-border text-primary" role="status"></div>
         ) : (
           <input className="btn btn-primary" type="submit" value="Login" />
         )}
@@ -72,24 +72,24 @@ function login(e, setIsLoggedIn, setErrorMsg, setIsloading) {
     },
     body: JSON.stringify({ email: email.value, password: password.value }),
   })
-    .then((response) => {
-      console.log(response.status);
-      if (response.status === 200) {
-        response.json().then((json) => {
+    .then((res) => {
+      if (res.status === 200) {
+        res.json().then((json) => {
           storeJWT(json);
           setIsLoggedIn(true);
         });
-      } else if (400 <= response.status && response.status < 500) {
+      } else if (400 <= res.status && res.status < 500) {
         setErrorMsg("Incorrect credentials.");
-      } else if (500 <= response.status && response.status < 600) {
+      } else if (500 <= res.status && res.status < 600) {
         setErrorMsg("Server error. Please try again later.");
       } else {
-        setErrorMsg("Unexpected error code: " + response.status);
+        console.error(`Unexpected error code: ${res.status}`);
+        setErrorMsg("Error fetching data.");
       }
     })
     .catch((error) => {
       console.error(error);
-      setErrorMsg("Unexpected error.");
+      setErrorMsg("Error fetching data.");
     })
     .finally(() => setIsloading(false));
 }
@@ -97,4 +97,27 @@ function login(e, setIsLoggedIn, setErrorMsg, setIsloading) {
 async function storeJWT(response) {
   console.log(response);
   document.cookie = `${jwt_cookie}=${response["accessToken"]}; SameSite=Strict`;
+}
+
+function hasJWT() {
+  const jwt = getCookie(jwt_cookie);
+  const hasJWT = jwt !== "" && jwt != null;
+  console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
+  return hasJWT;
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
