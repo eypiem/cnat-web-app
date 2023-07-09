@@ -1,0 +1,10 @@
+.footer {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(2, auto);
+  gap: 16px;
+  place-content: center;
+  color: #212121;
+  font-size: smaller;
+  background-color: #ccc;
+}

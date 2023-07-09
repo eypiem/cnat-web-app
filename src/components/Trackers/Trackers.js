@@ -1,69 +1,39 @@
-import React, { Component } from 'react'
-import Tracker from 'components/Tracker/Tracker';
-import './Trackers.css';
+import React, { useState } from "react";
+import Tracker from "components/Tracker/Tracker";
+import { useOutletContext, Link } from "react-router-dom";
+
+import "index.css";
+import "./Trackers.css";
 
 const url = "http://localhost:8080/tracker/get";
-const jwt_cookie = "jwt";
 
-class Trackers extends Component {
-  constructor(props) {
-    super(props)
+export default function Trackers() {
+  const { userId, token } = useOutletContext();
 
-    // Set initial state 
-    this.state = {
-      trackers: []
-    }
-  }
+  const [fetched, setFetched] = useState(false);
+  const [trackers, setTrackers] = useState([]);
 
-  componentDidMount() {
-    var data;
-    let token = this.getCookie(jwt_cookie);
-    if (token === "") {
-      console.error("JWT token not found");
-      return;
-    }
-
+  if (!fetched) {
     fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      }
+      },
     })
-      .then(response => response.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          trackers: json
-        });
-      })
-      .catch(error => console.error(error));
+      .then((response) => response.json())
+      .then((json) => setTrackers(json))
+      .then(() => setFetched(true))
+      .catch((error) => console.error(error));
   }
-
-  render() {
-    return (
-      <div className="Trackers">
-        <h1>Your trackers:</h1>
-        {this.state.trackers.map(item => <Tracker id = {item.id} />)}
-      </div>
-    );
-  }
-
-  getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
+  return (
+    <div className="Trackers">
+      <h2>Your trackers:</h2>
+      {trackers.map((item) => (
+        <Link to={`/user-area/tracker/${item.id}`} key={item.id}>
+          <Tracker id={item.id} />
+        </Link>
+      ))}
+    </div>
+  );
 }
-
-export default Trackers;

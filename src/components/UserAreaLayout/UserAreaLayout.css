@@ -1,0 +1,7 @@
+.header {
+  padding: 0 32px;
+  display: grid;
+  font-size: medium;
+  color: white;
+  background-color: black;
+}

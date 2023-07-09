@@ -1,25 +1,12 @@
-import React, { Component } from 'react'
+import React from "react";
 
-import './Tracker.css';
+import "index.css";
+import "./Tracker.css";
 
-class Tracker extends React.Component {
-
-  render() {
-    return (
-      <div className="Tracker">
-        <h5>{this.props.id}</h5>
-      </div>
-    );
-  }
-
+export default function Tracker({ id }) {
+  return (
+    <div className="Tracker">
+      <h5>{id}</h5>
+    </div>
+  );
 }
-
-// function Tracker() {
-//   return (
-//     <div className="Tracker">
-//       <h5>{this.props.id}</h5>
-//     </div>
-//   );
-// }
-
-export default Tracker;

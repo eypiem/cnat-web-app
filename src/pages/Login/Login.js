@@ -1,25 +1,10 @@
-
-import './Login.css';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import { useRef } from 'react';
+import "./Login.css";
+import "index.css";
 
 const url = "http://localhost:8080/auth/login";
 const jwt_cookie = "jwt";
 
-function Login() {
-
-
-  var jwt = getCookie(jwt_cookie);
-  if (jwt === "") {
-    console.log("No JWT stored in cookies");
-  } else {
-    console.log("Found JWT in cookies");
-    // const navigate = useNavigate();
-    // navigate('/trackers', { replace: true });
-
-  }
-
-
+export default function Login() {
   return (
     <form className="Login" onSubmit={login}>
       <label>
@@ -31,49 +16,33 @@ function Login() {
         <input type="password" id="password" />
       </label>
       <input type="submit" value="Login" />
-      <a className='Register'>Register</a>
+      {/* <a className='Register'>Register</a> */}
     </form>
   );
-}
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 function login(e) {
   e.preventDefault();
   const { email, password } = e.target.elements;
-  console.log({ email: email.value, password: password.value });
 
   fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
       // 'Accept': "application/json, text/plain, */*",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ "email": email.value, "password": password.value })
+    body: JSON.stringify({ email: email.value, password: password.value }),
   })
-    .then(response => response.json())
-    .then(json => storeJWT(json))
-    .catch(error => console.error(error));
+    .then((response) => response.json())
+    .then((json) => storeJWT(json))
+    .then(() => {
+      console.log("logged in");
+      // navigate("/user-area/trackers");
+    })
+    .catch((error) => console.error(error));
 }
 
 function storeJWT(response) {
   console.log(response);
-  document.cookie = `${jwt_cookie}=${response['accessToken']}; SameSite=Strict`;
+  document.cookie = `${jwt_cookie}=${response["accessToken"]}; SameSite=Strict`;
 }
-
-
-export default Login;

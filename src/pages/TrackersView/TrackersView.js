@@ -1,20 +1,8 @@
-import './TrackersView.css';
-import Trackers from 'components/Trackers/Trackers';
+import Trackers from "components/Trackers/Trackers";
 
+import "index.css";
+import "./TrackersView.css";
 
-
-
-function TrackersView() {
-
-  return (
-    <Trackers />
-  );
+export default function TrackersView() {
+  return <Trackers />;
 }
-
-function updateTrackers(trackers) {
-  this.setState({
-    "trackers": trackers
-  });
-}
-
-export default TrackersView;

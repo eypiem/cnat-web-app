@@ -1,15 +1,13 @@
-  
-  .Login {
-    min-height: 100vh;
-    display: grid;
-    gap: 16px;
-    place-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-    background-color: #282c34;
-  }
-  
-  .Register-link {
-    color: #61dafb;
-  }
-  
+.Login {
+  min-height: 100vh;
+  display: grid;
+  gap: 16px;
+  place-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  background-color: #282c34;
+}
+
+.Register-link {
+  color: #61dafb;
+}
