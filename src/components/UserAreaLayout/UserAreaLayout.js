@@ -25,13 +25,9 @@ export default function UserAreaLayout() {
 }
 
 function hasJWT() {
-  var jwt = getCookie(jwt_cookie);
-  let hasJWT = jwt !== "";
-  if (hasJWT) {
-    console.log("Found JWT in cookies");
-  } else {
-    console.log("No JWT stored in cookies");
-  }
+  const jwt = getCookie(jwt_cookie);
+  const hasJWT = jwt !== "" && jwt != null;
+  console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
   return hasJWT;
 }
 

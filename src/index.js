@@ -26,6 +26,8 @@ import TrackerView from "pages/TrackerView/TrackerView";
 import ErrorPage from "pages/ErrorPage/ErrorPage";
 import RootLayout from "components/RootLayout/RootLayout";
 import UserAreaLayout from "components/UserAreaLayout/UserAreaLayout";
+import "bootstrap/dist/css/bootstrap.css";
+import "./index.css";
 
 export default function App() {
   return (
