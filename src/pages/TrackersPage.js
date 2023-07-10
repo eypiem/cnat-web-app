@@ -17,7 +17,6 @@ export default function TrackersPage() {
     fetch(url, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     })
@@ -61,11 +60,10 @@ export default function TrackersPage() {
                   </p>
                   <div className="btn btn-primary disabled placeholder-glow"></div>
                 </div>
-                <div className="card-footer placeholder-glow"></div>
               </div>
             </div>
           ) : (
-            trackers.map((item) => <Tracker key={item.id} id={item.id} />)
+            trackers.map((e) => <Tracker key={e.id} tracker={e} />)
           )}
         </div>
       )}

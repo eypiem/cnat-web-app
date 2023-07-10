@@ -93,7 +93,6 @@ function login(e, setIsLoggedIn, setErrorMsg, setIsloading) {
 }
 
 async function storeJWT(response) {
-  console.log(response);
   document.cookie = `${jwt_cookie}=${response["accessToken"]}; SameSite=Strict`;
 }
 
