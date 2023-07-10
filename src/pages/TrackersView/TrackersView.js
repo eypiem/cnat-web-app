@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Tracker from "components/Tracker/Tracker";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 import "index.css";
-import "./TrackersView.css";
 
 const url = "http://localhost:8080/tracker/get";
 
@@ -41,30 +40,33 @@ export default function TrackersView() {
       });
   }
   return (
-    <div className="container p-3">
+    <div className="container d-flex flex-column py-4 gap-4">
+      <Link to="register" className="btn btn-primary align-self-start">
+        Register new tracker
+      </Link>
       <h2>Your trackers:</h2>
       {errorMsg.length > 0 ? (
         <p className="text-danger col-12">{errorMsg}</p>
       ) : (
-        <div className="row justify-content-md-center">
-          {!fetched && (
-            <div className="card col-3 m-2 p-0" aria-hidden="true">
-              <div className="card-body">
-                <h5 className="card-title placeholder-glow">
-                  <span className="placeholder col-6"></span>
-                </h5>
-                <p className="card-text placeholder-glow">
-                  <span className="placeholder col-4"></span>
-                </p>
-                <a className="btn btn-primary disabled placeholder-glow"></a>
+        <div className="d-flex flex-wrap gap-3">
+          {!fetched ? (
+            <div className="col-3">
+              <div className="card m-2 p-0" aria-hidden="true">
+                <div className="card-body">
+                  <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                  </h5>
+                  <p className="card-text placeholder-glow">
+                    <span className="placeholder col-4"></span>
+                  </p>
+                  <a className="btn btn-primary disabled placeholder-glow"></a>
+                </div>
+                <div className="card-footer placeholder-glow"></div>
               </div>
-              <div className="card-footer placeholder-glow"></div>
             </div>
+          ) : (
+            trackers.map((item) => <Tracker key={item.id} id={item.id} />)
           )}
-
-          {trackers.map((item) => (
-            <Tracker key={item.id} id={item.id} />
-          ))}
         </div>
       )}
     </div>

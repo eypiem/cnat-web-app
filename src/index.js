@@ -26,6 +26,9 @@ import TrackerView from "pages/TrackerView/TrackerView";
 import ErrorPage from "pages/ErrorPage/ErrorPage";
 import RootLayout from "components/RootLayout/RootLayout";
 import UserAreaLayout from "components/UserAreaLayout/UserAreaLayout";
+import TrackerRegisterPage from "pages/TrackerRegisterPage/TrackerRegisterPage";
+import TrackerDeletePage from "pages/TrackerDeletePage/TrackerDeletePage";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
 
@@ -38,10 +41,11 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="user-area" element={<UserAreaLayout />}>
-            <Route path="trackers" element={<TrackersView />} />
             <Route path="tracker">
+              <Route index element={<TrackersView />} />
               <Route path=":trackerId" element={<TrackerView />} />
-              <Route path="new" element={<TrackerView />} />
+              <Route path="register" element={<TrackerRegisterPage />} />
+              <Route path="delete" element={<TrackerDeletePage />} />
             </Route>
           </Route>
         </Route>

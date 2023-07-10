@@ -14,7 +14,7 @@ export default function Home() {
           <Link to="login" className="App-link">
             Login
           </Link>
-          or
+          {" or "}
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -23,7 +23,7 @@ export default function Home() {
             Register
           </a>
         </span>
-        <Link to="user-area/trackers" className="App-link">
+        <Link to="user-area/tracker" className="App-link">
           Trackers
         </Link>
       </header>

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 
-import "./Login.css";
-
 const url = "http://localhost:8080/auth/login";
 const jwt_cookie = "jwt";
 
@@ -13,48 +11,46 @@ export default function Login() {
 
   console.log(`Login: is logged in: ${isLoggedIn || hasJWT()}`);
 
-  if (isLoggedIn || hasJWT()) {
-    return <Navigate to="/user-area/trackers" replace={true} />;
-  }
-
   return (
     <>
-      {/* {(isLoggedIn || hasJWT()) && (
-        <Navigate to="/user-area/trackers" replace={true} />
-      )} */}
-      <form
-        className="Login"
-        onSubmit={(e) => login(e, setIsLoggedIn, setErrorMsg, setIsloading)}
-      >
-        <div className="input-group flex-nowrap">
-          <input
-            id="email"
-            type="email"
-            className="form-control"
-            placeholder="Email"
-            aria-label="Email"
-            aria-describedby="addon-wrapping"
-          />
-        </div>
-        <div className="input-group flex-nowrap">
-          <input
-            id="password"
-            type="password"
-            className="form-control"
-            placeholder="Password"
-            aria-label="Password"
-            aria-describedby="addon-wrapping"
-          />
-        </div>
-        {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
-        {isLoading ? (
-          <div className="spinner-border text-primary" role="status"></div>
-        ) : (
-          <input className="btn btn-primary" type="submit" value="Login" />
-        )}
+      {(isLoggedIn || hasJWT()) && (
+        <Navigate to="/user-area/tracker" replace={true} />
+      )}
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <form
+          className="d-flex flex-column align-items-center gap-3"
+          onSubmit={(e) => login(e, setIsLoggedIn, setErrorMsg, setIsloading)}
+        >
+          <div className="input-group flex-nowrap">
+            <input
+              id="email"
+              type="email"
+              className="form-control"
+              placeholder="Email"
+              aria-label="Email"
+              aria-describedby="addon-wrapping"
+            />
+          </div>
+          <div className="input-group flex-nowrap">
+            <input
+              id="password"
+              type="password"
+              className="form-control"
+              placeholder="Password"
+              aria-label="Password"
+              aria-describedby="addon-wrapping"
+            />
+          </div>
+          {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
+          {isLoading ? (
+            <div className="spinner-border text-primary" role="status"></div>
+          ) : (
+            <input className="btn btn-primary" type="submit" value="Login" />
+          )}
 
-        {/* <a className='Register'>Register</a> */}
-      </form>
+          {/* <a className='Register'>Register</a> */}
+        </form>
+      </div>
     </>
   );
 }

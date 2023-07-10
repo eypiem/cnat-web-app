@@ -1,7 +1,0 @@
-.Login {
-  min-height: 100vh;
-  display: grid;
-  gap: 16px;
-  place-content: center;
-  place-items: center;
-}
