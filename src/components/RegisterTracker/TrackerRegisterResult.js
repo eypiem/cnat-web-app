@@ -8,7 +8,9 @@ export default function TrackerRegisterResult({ newTracker }) {
         <div className="card-body px-0 pb-0">
           <h5 className="card-title px-3">Tracker Name</h5>
           <h6 className="card-subtitle mb-2 px-3 text-body-secondary">
-            Tracker Group
+            <span className="font-monospace ">
+              {newTracker["tracker"]["id"]}
+            </span>
           </h6>
           <p className="card-text">
             <div className="px-3">
@@ -25,10 +27,6 @@ export default function TrackerRegisterResult({ newTracker }) {
               </span>
             </div>
           </p>
-        </div>
-        <div className="card-footer text-body-secondary">
-          Tracker Id:{" "}
-          <span className="font-monospace ">{newTracker["tracker"]["id"]}</span>
         </div>
       </div>
       <Link to={".."} className="btn btn-primary btn-sm">

@@ -9,8 +9,8 @@ export default function Tracker({ id }) {
       <div className="card p-0">
         <div className="card-body">
           <h5 className="card-title">Tracker Name</h5>
-          <h6 className="card-subtitle mb-2 text-body-secondary">
-            Tracker Group
+          <h6 className="card-subtitle mb-2 font-monospace text-body-secondary">
+            {id}
           </h6>
 
           <Link
@@ -19,9 +19,6 @@ export default function Tracker({ id }) {
           >
             View
           </Link>
-        </div>
-        <div className="card-footer font-monospace text-body-secondary">
-          {id}
         </div>
       </div>
     </div>

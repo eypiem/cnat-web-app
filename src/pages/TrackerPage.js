@@ -3,9 +3,9 @@ import { useOutletContext, useParams } from "react-router-dom";
 
 const url = "http://localhost:8080/tracker-data/get";
 
-export default function TrackerView() {
+export default function TrackerPage() {
   const { trackerId } = useParams();
-  const { userId, token } = useOutletContext();
+  const { token } = useOutletContext();
 
   const [fetched, setFetched] = useState(false);
   const [data, setData] = useState([]);
@@ -22,7 +22,6 @@ export default function TrackerView() {
       body: JSON.stringify({
         tracker: {
           id: trackerId,
-          userId: userId,
         },
       }),
     })
@@ -36,9 +35,12 @@ export default function TrackerView() {
   }
   return (
     <>
-      <div className="container py-4">
-        <div className="row">
-          <h3>Tracker {trackerId}</h3>
+      <div className=" container d-flex flex-column py-4 min-vh-100 gap-3">
+        <div>
+          <h4 className="">Tracker Name</h4>
+          <h5 className="mb-2 font-monospace text-body-secondary">
+            {trackerId}
+          </h5>
         </div>
         <div className="row border rounded">
           <div className="col-3 p-2">

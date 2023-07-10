@@ -19,15 +19,16 @@
 import ReactDOM from "react-dom/client";
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
-import TrackersView from "./pages/TrackersView/TrackersView";
-import TrackerView from "pages/TrackerView/TrackerView";
-import ErrorPage from "pages/ErrorPage/ErrorPage";
+import HomePage from "./pages/HomePage";
+import UserLoginPage from "./pages/UserLoginPage";
+import UserRegisterPage from "pages/UserRegisterPage";
+import TrackersPage from "./pages/TrackersPage";
+import TrackerPage from "pages/TrackerPage";
+import ErrorPage from "pages/ErrorPage";
 import RootLayout from "components/RootLayout/RootLayout";
 import UserAreaLayout from "components/UserAreaLayout/UserAreaLayout";
-import TrackerRegisterPage from "pages/TrackerRegisterPage/TrackerRegisterPage";
-import TrackerDeletePage from "pages/TrackerDeletePage/TrackerDeletePage";
+import TrackerRegisterPage from "pages/TrackerRegisterPage";
+import TrackerDeletePage from "pages/TrackerDeletePage";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
@@ -37,19 +38,20 @@ export default function App() {
     // <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<UserLoginPage />} />
+          <Route path="register" element={<UserRegisterPage />} />
           <Route path="user-area" element={<UserAreaLayout />}>
             <Route path="tracker">
-              <Route index element={<TrackersView />} />
-              <Route path=":trackerId" element={<TrackerView />} />
+              <Route index element={<TrackersPage />} />
+              <Route path=":trackerId" element={<TrackerPage />} />
               <Route path="register" element={<TrackerRegisterPage />} />
               <Route path="delete" element={<TrackerDeletePage />} />
             </Route>
           </Route>
+          <Route path="*" element={<ErrorPage />} />
         </Route>
-        {/* <Route path="*" element={<ErrorPage />} /> */}
       </Routes>
     </BrowserRouter>
     // </React.StrictMode>

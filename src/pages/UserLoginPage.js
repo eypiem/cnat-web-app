@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 const url = "http://localhost:8080/auth/login";
 const jwt_cookie = "jwt";
 
-export default function Login() {
+export default function UserLoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -16,7 +16,8 @@ export default function Login() {
       {(isLoggedIn || hasJWT()) && (
         <Navigate to="/user-area/tracker" replace={true} />
       )}
-      <div className="d-flex justify-content-center align-items-center min-vh-100">
+      <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-3">
+        <h3>User Login</h3>
         <form
           className="d-flex flex-column align-items-center gap-3"
           onSubmit={(e) => login(e, setIsLoggedIn, setErrorMsg, setIsloading)}
@@ -47,9 +48,10 @@ export default function Login() {
           ) : (
             <input className="btn btn-primary" type="submit" value="Login" />
           )}
-
-          {/* <a className='Register'>Register</a> */}
         </form>
+        <Link to="/register" className="btn btn-outline-secondary">
+          Register
+        </Link>
       </div>
     </>
   );
@@ -57,8 +59,8 @@ export default function Login() {
 
 function login(e, setIsLoggedIn, setErrorMsg, setIsloading) {
   e.preventDefault();
-  setIsloading(true);
   setErrorMsg("");
+  setIsloading(true);
   const { email, password } = e.target.elements;
 
   fetch(url, {

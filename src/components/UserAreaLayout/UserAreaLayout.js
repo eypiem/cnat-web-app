@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Login from "pages/Login/Login";
+import UserLoginPage from "pages/UserLoginPage";
 
 import "index.css";
 import "./UserAreaLayout.css";
@@ -8,20 +8,18 @@ import "./UserAreaLayout.css";
 const jwt_cookie = "jwt";
 
 export default function UserAreaLayout() {
-  const userId = "c@c.com";
-
   const token = getCookie(jwt_cookie);
   console.log(`UserAreaLayout: is logged in: ${hasJWT()}`);
 
   return hasJWT() ? (
     <>
       <div className="header">
-        <p>Hi {userId}!</p>
+        <p>Hi!</p>
       </div>
-      <Outlet context={{ userId: userId, token: token }} />
+      <Outlet context={{ token: token }} />
     </>
   ) : (
-    <Login />
+    <UserLoginPage />
   );
 }
 

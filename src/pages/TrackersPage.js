@@ -6,8 +6,8 @@ import "index.css";
 
 const url = "http://localhost:8080/tracker/get";
 
-export default function TrackersView() {
-  const { userId, token } = useOutletContext();
+export default function TrackersPage() {
+  const { token } = useOutletContext();
 
   const [fetched, setFetched] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -40,7 +40,7 @@ export default function TrackersView() {
       });
   }
   return (
-    <div className="container d-flex flex-column py-4 gap-4">
+    <div className="container d-flex flex-column py-4 gap-4 min-vh-100">
       <Link to="register" className="btn btn-primary align-self-start">
         Register new tracker
       </Link>
@@ -59,7 +59,7 @@ export default function TrackersView() {
                   <p className="card-text placeholder-glow">
                     <span className="placeholder col-4"></span>
                   </p>
-                  <a className="btn btn-primary disabled placeholder-glow"></a>
+                  <div className="btn btn-primary disabled placeholder-glow"></div>
                 </div>
                 <div className="card-footer placeholder-glow"></div>
               </div>
