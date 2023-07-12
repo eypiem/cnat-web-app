@@ -26,7 +26,7 @@ import TrackersPage from "./pages/TrackersPage";
 import TrackerPage from "pages/TrackerPage";
 import ErrorPage from "pages/ErrorPage";
 import RootLayout from "components/RootLayout/RootLayout";
-import UserAreaLayout from "components/UserAreaLayout/UserAreaLayout";
+import UserAreaLayout from "components/UserAreaLayout";
 import TrackerRegisterPage from "pages/TrackerRegisterPage";
 import TrackerDeletePage from "pages/TrackerDeletePage";
 

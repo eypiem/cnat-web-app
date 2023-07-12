@@ -16,28 +16,32 @@ export default function UserLoginPage() {
       {(isLoggedIn || hasJWT()) && (
         <Navigate to="/user-area/tracker" replace={true} />
       )}
-      <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-3">
+      <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
         <h3>User Login</h3>
         <form
-          className="d-flex flex-column align-items-center gap-3"
-          onSubmit={(e) => login(e, setIsLoggedIn, setErrorMsg, setIsloading)}
+          className="d-flex flex-column align-items-center gap-2"
+          onSubmit={login}
         >
-          <div className="input-group flex-nowrap">
+          <div>
+            <label htmlFor="from" className="form-label">
+              Email
+            </label>
             <input
               id="email"
               type="email"
               className="form-control"
-              placeholder="Email"
               aria-label="Email"
               aria-describedby="addon-wrapping"
             />
           </div>
-          <div className="input-group flex-nowrap">
+          <div>
+            <label htmlFor="from" className="form-label">
+              Password
+            </label>
             <input
               id="password"
               type="password"
               className="form-control"
-              placeholder="Password"
               aria-label="Password"
               aria-describedby="addon-wrapping"
             />
@@ -46,7 +50,11 @@ export default function UserLoginPage() {
           {isLoading ? (
             <div className="spinner-border text-primary" role="status"></div>
           ) : (
-            <input className="btn btn-primary" type="submit" value="Login" />
+            <input
+              className="btn btn-primary w-100"
+              type="submit"
+              value="Login"
+            />
           )}
         </form>
         <Link to="/register" className="btn btn-outline-secondary">
@@ -55,41 +63,41 @@ export default function UserLoginPage() {
       </div>
     </>
   );
-}
 
-function login(e, setIsLoggedIn, setErrorMsg, setIsloading) {
-  e.preventDefault();
-  setErrorMsg("");
-  setIsloading(true);
-  const { email, password } = e.target.elements;
+  function login(e) {
+    e.preventDefault();
+    setErrorMsg("");
+    setIsloading(true);
+    const { email, password } = e.target.elements;
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email: email.value, password: password.value }),
-  })
-    .then((res) => {
-      if (res.status === 200) {
-        res.json().then((json) => {
-          storeJWT(json);
-          setIsLoggedIn(true);
-        });
-      } else if (400 <= res.status && res.status < 500) {
-        setErrorMsg("Incorrect credentials.");
-      } else if (500 <= res.status && res.status < 600) {
-        setErrorMsg("Server error. Please try again later.");
-      } else {
-        console.error(`Unexpected error code: ${res.status}`);
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email.value, password: password.value }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          res.json().then((json) => {
+            storeJWT(json);
+            setIsLoggedIn(true);
+          });
+        } else if (400 <= res.status && res.status < 500) {
+          setErrorMsg("Incorrect credentials.");
+        } else if (500 <= res.status && res.status < 600) {
+          setErrorMsg("Server error. Please try again later.");
+        } else {
+          console.error(`Unexpected error code: ${res.status}`);
+          setErrorMsg("Error fetching data.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
         setErrorMsg("Error fetching data.");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      setErrorMsg("Error fetching data.");
-    })
-    .finally(() => setIsloading(false));
+      })
+      .finally(() => setIsloading(false));
+  }
 }
 
 async function storeJWT(response) {

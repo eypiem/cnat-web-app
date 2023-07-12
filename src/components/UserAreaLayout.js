@@ -1,9 +1,6 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import UserLoginPage from "pages/UserLoginPage";
-
-import "index.css";
-import "./UserAreaLayout.css";
 
 const jwt_cookie = "jwt";
 
@@ -13,9 +10,31 @@ export default function UserAreaLayout() {
 
   return hasJWT() ? (
     <>
-      <div className="header">
-        <p>Hi!</p>
-      </div>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <div className="container-fluid">
+          <Link to="/" className="navbar-brand">
+            CNAT
+          </Link>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link
+                  to="/user-area/tracker"
+                  className="nav-link active"
+                  aria-current="page"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/" className="nav-link active" aria-current="page">
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
       <Outlet context={{ token: token }} />
     </>
   ) : (

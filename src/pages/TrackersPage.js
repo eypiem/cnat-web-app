@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Tracker from "components/Tracker/Tracker";
+import Tracker from "components/Tracker";
 import { Link, useOutletContext } from "react-router-dom";
 
 import "index.css";
