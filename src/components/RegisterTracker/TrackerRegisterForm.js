@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-const url = "http://localhost:8080/tracker/register";
+const { REACT_APP_API_BASE_URL } = process.env;
 
 export default function TrackerRegisterForm({ setNewTracker }) {
   const { userId, token } = useOutletContext();
@@ -40,6 +40,7 @@ export default function TrackerRegisterForm({ setNewTracker }) {
     setErrorMsg("");
     setIsloading(true);
     const { name } = e.target.elements;
+    const url = `${REACT_APP_API_BASE_URL}/tracker/register`;
 
     fetch(url, {
       method: "POST",

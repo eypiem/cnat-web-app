@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-import "index.css";
 import "./RootLayout.css";
 
 export default function RootLayout() {

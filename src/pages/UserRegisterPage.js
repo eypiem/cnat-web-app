@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 
-const url = "http://localhost:8080/user/register";
+const { REACT_APP_API_BASE_URL } = process.env;
 
 export default function UserRegisterPage() {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -87,7 +87,9 @@ export default function UserRegisterPage() {
     e.preventDefault();
     setErrorMsg("");
     setIsloading(true);
+
     const { firstName, lastName, email, password } = e.target.elements;
+    const url = `${REACT_APP_API_BASE_URL}/user/register`;
 
     fetch(url, {
       method: "POST",

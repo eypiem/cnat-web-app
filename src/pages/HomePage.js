@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 
-import "index.css";
-
 export default function HomePage() {
   return (
     <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-5">

@@ -2,10 +2,10 @@ import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import UserLoginPage from "pages/UserLoginPage";
 
-const jwt_cookie = "jwt";
+const { REACT_APP_JWT_TOKEN_KEY } = process.env;
 
 export default function UserAreaLayout() {
-  const token = getCookie(jwt_cookie);
+  const token = getCookie(REACT_APP_JWT_TOKEN_KEY);
   console.log(`UserAreaLayout: is logged in: ${hasJWT()}`);
 
   return hasJWT() ? (
@@ -43,7 +43,7 @@ export default function UserAreaLayout() {
 }
 
 function hasJWT() {
-  const jwt = getCookie(jwt_cookie);
+  const jwt = getCookie(REACT_APP_JWT_TOKEN_KEY);
   const hasJWT = jwt !== "" && jwt != null;
   console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
   return hasJWT;

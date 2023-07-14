@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 
-const url = "http://localhost:8080/auth/login";
-const jwt_cookie = "jwt";
+const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
 
 export default function UserLoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,7 +67,9 @@ export default function UserLoginPage() {
     e.preventDefault();
     setErrorMsg("");
     setIsloading(true);
+
     const { email, password } = e.target.elements;
+    const url = `${REACT_APP_API_BASE_URL}/auth/login`;
 
     fetch(url, {
       method: "POST",
@@ -101,11 +102,11 @@ export default function UserLoginPage() {
 }
 
 async function storeJWT(response) {
-  document.cookie = `${jwt_cookie}=${response["accessToken"]}; SameSite=Strict`;
+  document.cookie = `${REACT_APP_JWT_TOKEN_KEY}=${response["accessToken"]}; SameSite=Strict`;
 }
 
 function hasJWT() {
-  const jwt = getCookie(jwt_cookie);
+  const jwt = getCookie(REACT_APP_JWT_TOKEN_KEY);
   const hasJWT = jwt !== "" && jwt != null;
   console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
   return hasJWT;

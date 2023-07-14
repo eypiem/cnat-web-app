@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import Tracker from "components/Tracker";
 import { Link, useOutletContext } from "react-router-dom";
 
-import "index.css";
-
-const url = "http://localhost:8080/tracker/get";
+const { REACT_APP_API_BASE_URL } = process.env;
 
 export default function TrackersPage() {
   const { token } = useOutletContext();
@@ -14,6 +12,7 @@ export default function TrackersPage() {
   const [trackers, setTrackers] = useState([]);
 
   if (!fetched) {
+    const url = `${REACT_APP_API_BASE_URL}/tracker/get`;
     fetch(url, {
       method: "GET",
       headers: {

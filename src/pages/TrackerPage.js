@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-const url = "http://localhost:8080/tracker-data";
+const { REACT_APP_API_BASE_URL } = process.env;
 
 export default function TrackerPage() {
   const { trackerId } = useParams();
@@ -218,7 +218,10 @@ export default function TrackerPage() {
   function deleteTracker() {
     setIsDeleting(true);
     setDeleteErrorMsg("");
-    fetch(`http://localhost:8080/tracker/delete/${trackerId}`, {
+
+    const url = `${REACT_APP_API_BASE_URL}/tracker/delete/${trackerId}`;
+
+    fetch(url, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -262,9 +265,10 @@ export default function TrackerPage() {
   function fetchTrackerData() {
     setIsFetching(true);
     setFetchErrorMsg("");
-    const trackerDataUrl = `${url}/get/${trackerId}?from=${timestampFrom}&to=${timestampTo}`;
 
-    fetch(trackerDataUrl, {
+    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get/${trackerId}?from=${timestampFrom}&to=${timestampTo}`;
+
+    fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
