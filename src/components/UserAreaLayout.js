@@ -1,12 +1,14 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import UserLoginPage from "pages/UserLoginPage";
+import { useCookies } from "react-cookie";
 
 const { REACT_APP_JWT_TOKEN_KEY } = process.env;
 
 export default function UserAreaLayout() {
-  const token = getCookie(REACT_APP_JWT_TOKEN_KEY);
-  console.log(`UserAreaLayout: is logged in: ${hasJWT()}`);
+  const [cookies, setCookie, removeCookie] = useCookies([
+    REACT_APP_JWT_TOKEN_KEY,
+  ]);
 
   return hasJWT() ? (
     <>
@@ -27,7 +29,12 @@ export default function UserAreaLayout() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="nav-link active" aria-current="page">
+                <Link
+                  to="/"
+                  className="nav-link active"
+                  aria-current="page"
+                  onClick={logout}
+                >
                   Logout
                 </Link>
               </li>
@@ -35,32 +42,22 @@ export default function UserAreaLayout() {
           </div>
         </div>
       </nav>
-      <Outlet context={{ token: token }} />
+      <Outlet context={{ token: cookies[REACT_APP_JWT_TOKEN_KEY] }} />
     </>
   ) : (
     <UserLoginPage />
   );
-}
 
-function hasJWT() {
-  const jwt = getCookie(REACT_APP_JWT_TOKEN_KEY);
-  const hasJWT = jwt !== "" && jwt != null;
-  console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
-  return hasJWT;
-}
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
+  function logout() {
+    removeCookie(REACT_APP_JWT_TOKEN_KEY, {
+      path: "/",
+    });
   }
-  return "";
+
+  function hasJWT() {
+    return (
+      cookies[REACT_APP_JWT_TOKEN_KEY] !== "" &&
+      cookies[REACT_APP_JWT_TOKEN_KEY] != null
+    );
+  }
 }

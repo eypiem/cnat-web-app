@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
 
@@ -7,8 +8,7 @@ export default function UserLoginPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
-
-  console.log(`Login: is logged in: ${isLoggedIn || hasJWT()}`);
+  const [cookies, setCookie] = useCookies([REACT_APP_JWT_TOKEN_KEY]);
 
   useEffect(() => {
     document.title = "CNAT | Login";
@@ -103,31 +103,18 @@ export default function UserLoginPage() {
       })
       .finally(() => setIsloading(false));
   }
-}
 
-async function storeJWT(response) {
-  document.cookie = `${REACT_APP_JWT_TOKEN_KEY}=${response["accessToken"]}; SameSite=Strict`;
-}
-
-function hasJWT() {
-  const jwt = getCookie(REACT_APP_JWT_TOKEN_KEY);
-  const hasJWT = jwt !== "" && jwt != null;
-  console.log(hasJWT ? "Found JWT in cookies" : "No JWT stored in cookies");
-  return hasJWT;
-}
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
+  function storeJWT(response) {
+    setCookie(REACT_APP_JWT_TOKEN_KEY, response["accessToken"], {
+      path: "/",
+      sameSite: "strict",
+    });
   }
-  return "";
+
+  function hasJWT() {
+    return (
+      cookies[REACT_APP_JWT_TOKEN_KEY] !== "" &&
+      cookies[REACT_APP_JWT_TOKEN_KEY] != null
+    );
+  }
 }

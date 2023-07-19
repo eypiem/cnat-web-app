@@ -147,7 +147,7 @@ export default function TrackerPage() {
               <div className="spinner-border text-primary" role="status"></div>
             ) : fetchErrorMsg.length > 0 ? (
               <p className="text-danger">{fetchErrorMsg}</p>
-            ) : chartData["datasets"].length == 0 ? (
+            ) : chartData["datasets"].length === 0 ? (
               <p>No data</p>
             ) : (
               <Line options={chartOptions} data={chartData} />
