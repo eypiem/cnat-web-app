@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 
 const { REACT_APP_API_BASE_URL } = process.env;
@@ -7,6 +7,10 @@ export default function UserRegisterPage() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
+
+  useEffect(() => {
+    document.title = "CNAT | Register";
+  }, []);
 
   return (
     <>

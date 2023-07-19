@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 
 const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
@@ -9,6 +9,10 @@ export default function UserLoginPage() {
   const [isLoading, setIsloading] = useState(false);
 
   console.log(`Login: is logged in: ${isLoggedIn || hasJWT()}`);
+
+  useEffect(() => {
+    document.title = "CNAT | Login";
+  }, []);
 
   return (
     <>

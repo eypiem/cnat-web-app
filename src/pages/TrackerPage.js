@@ -55,6 +55,7 @@ export default function TrackerPage() {
   };
 
   useEffect(() => {
+    document.title = "CNAT | Tracker";
     document.documentElement.scrollTo({
       top: 0,
       left: 0,

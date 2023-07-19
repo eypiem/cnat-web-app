@@ -10,9 +10,10 @@ export default function TrackerRegisterForm({ setNewTracker }) {
   const [isLoading, setIsloading] = useState(false);
 
   return (
-    <>
+    <div className="d-flex flex-column justify-content-center align-items-center gap-4">
+      <h3>Tracker Registration</h3>
       <form
-        className="d-flex flex-column align-items-center gap-3"
+        className="d-flex flex-column align-items-center gap-2"
         onSubmit={register}
       >
         <div className="input-group flex-nowrap">
@@ -32,7 +33,7 @@ export default function TrackerRegisterForm({ setNewTracker }) {
           <input className="btn btn-primary" type="submit" value="Register" />
         )}
       </form>
-    </>
+    </div>
   );
 
   function register(e) {

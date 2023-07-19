@@ -11,7 +11,10 @@ export default function TrackersPage() {
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
   const [trackers, setTrackers] = useState([]);
 
-  useEffect(fetchTrackers, []);
+  useEffect(() => {
+    document.title = "CNAT | Trackers";
+    fetchTrackers();
+  }, []);
 
   return (
     <div className="container d-flex flex-column py-4 gap-4 min-vh-100">
