@@ -11,12 +11,13 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-
-const { REACT_APP_API_BASE_URL } = process.env;
+import TrackerDetails from "components/TrackerDetails";
 
 export default function TrackerPage() {
-  const { trackerId } = useParams();
+  const { REACT_APP_API_BASE_URL } = process.env;
   const { token } = useOutletContext();
+
+  const { trackerId } = useParams();
 
   const [isFetching, setIsFetching] = useState(true);
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
@@ -54,6 +55,10 @@ export default function TrackerPage() {
   };
 
   useEffect(() => {
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+    });
     fetchTrackerData();
   }, []);
 
@@ -61,12 +66,7 @@ export default function TrackerPage() {
     <>
       {isDeleted && <Navigate to=".." replace={true} />}
       <div className=" container d-flex flex-column py-4 min-vh-100 gap-3">
-        <div>
-          <h4 className="">Tracker name</h4>
-          <h5 className="mb-2 font-monospace text-body-secondary">
-            {trackerId}
-          </h5>
-        </div>
+        <TrackerDetails trackerId={trackerId} />
         <div className="d-flex border rounded">
           <div className="d-flex flex-column justify-content-between col-3 p-3 gap-3">
             <div>
@@ -146,6 +146,8 @@ export default function TrackerPage() {
               <div className="spinner-border text-primary" role="status"></div>
             ) : fetchErrorMsg.length > 0 ? (
               <p className="text-danger">{fetchErrorMsg}</p>
+            ) : chartData["datasets"].length == 0 ? (
+              <p>No data</p>
             ) : (
               <Line options={chartOptions} data={chartData} />
             )}
@@ -296,7 +298,6 @@ export default function TrackerPage() {
         console.log(json);
         updateChartData(json);
         updateDataTypes(json);
-        setFetchErrorMsg("");
       })
       .catch((error) => {
         console.error(error);
