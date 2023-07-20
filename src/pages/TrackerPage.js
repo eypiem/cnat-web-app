@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import TrackerDetails from "components/TrackerDetails";
+import TrackerDataForm from "components/TrackerDataForm";
 
 export default function TrackerPage() {
   const { REACT_APP_API_BASE_URL } = process.env;
@@ -21,9 +22,6 @@ export default function TrackerPage() {
 
   const [isFetching, setIsFetching] = useState(true);
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
-
-  const [timestampFrom, setTimestampFrom] = useState("");
-  const [timestampTo, setTimestampTo] = useState("");
 
   const [isDeleted, setIsDeleted] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -60,7 +58,7 @@ export default function TrackerPage() {
       top: 0,
       left: 0,
     });
-    fetchTrackerData();
+    fetchTrackerData(null, null);
   }, []);
 
   return (
@@ -85,61 +83,10 @@ export default function TrackerPage() {
                 </div>
               ))}
             </div>
-            <form
-              className="d-flex flex-column align-items-center gap-2"
-              onSubmit={fetchTrackerDataFromForm}
-            >
-              <div className="w-100">
-                <label className="form-label">From</label>
-                <div className="input-group flex-nowrap">
-                  <input
-                    id="fromDate"
-                    type="date"
-                    className="form-control"
-                    aria-label="From"
-                    aria-describedby="addon-wrapping"
-                  />
-                  <input
-                    id="fromTime"
-                    type="time"
-                    className="form-control"
-                    aria-label="From"
-                    aria-describedby="addon-wrapping"
-                  />
-                </div>
-              </div>
-              <div className="w-100">
-                <label className="form-label">To</label>
-                <div className="input-group flex-nowrap">
-                  <input
-                    id="toDate"
-                    type="date"
-                    className="form-control"
-                    aria-label="From"
-                    aria-describedby="addon-wrapping"
-                  />
-                  <input
-                    id="toTime"
-                    type="time"
-                    className="form-control"
-                    aria-label="From"
-                    aria-describedby="addon-wrapping"
-                  />
-                </div>
-              </div>
-              {isFetching ? (
-                <div
-                  className="spinner-border text-primary"
-                  role="status"
-                ></div>
-              ) : (
-                <input
-                  className="btn btn-primary btn-sm"
-                  type="submit"
-                  value="Fetch data"
-                />
-              )}
-            </form>
+            <TrackerDataForm
+              isFetching={isFetching}
+              onfetchTrackerData={fetchTrackerData}
+            />
           </div>
           <div className="vr"></div>
           <div className="d-flex justify-content-center align-items-center bg-light w-100 p-3">
@@ -247,29 +194,13 @@ export default function TrackerPage() {
       .finally(() => setIsDeleting(false));
   }
 
-  function fetchTrackerDataFromForm(e) {
-    e.preventDefault();
-    const { fromDate, fromTime, toDate, toTime } = e.target.elements;
-
-    const from = dateAndTimeToTimestamp(fromDate.value, fromTime.value);
-    const to = dateAndTimeToTimestamp(toDate.value, toTime.value);
-
-    setTimestampFrom(from);
-    setTimestampTo(to);
-    fetchTrackerData();
-  }
-
-  function dateAndTimeToTimestamp(date, time) {
-    return date !== ""
-      ? `${date}T${time !== "" ? `${time}` : "00:00"}:00Z`
-      : "";
-  }
-
-  function fetchTrackerData() {
+  function fetchTrackerData(from, to) {
     setIsFetching(true);
     setFetchErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get/${trackerId}?from=${timestampFrom}&to=${timestampTo}`;
+    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get/${trackerId}?from=${
+      from ?? ""
+    }&to=${to ?? ""}`;
 
     fetch(url, {
       method: "GET",
