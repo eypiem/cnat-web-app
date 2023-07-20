@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useOutletContext, useParams, Navigate } from "react-router-dom";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
 import TrackerDetails from "components/TrackerDetails";
 import TrackerDataForm from "components/TrackerDataForm";
+import TrackerDataChart from "components/TrackerDataChart";
 
 export default function TrackerPage() {
   const { REACT_APP_API_BASE_URL } = process.env;
@@ -29,17 +19,6 @@ export default function TrackerPage() {
 
   const [dataTypes, setDataTypes] = useState([]);
   const [chartData, setChartData] = useState({});
-
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
-  };
 
   const dateTimeFormatOptions = {
     year: "2-digit",
@@ -89,17 +68,11 @@ export default function TrackerPage() {
             />
           </div>
           <div className="vr"></div>
-          <div className="d-flex justify-content-center align-items-center bg-light w-100 p-3">
-            {isFetching ? (
-              <div className="spinner-border text-primary" role="status"></div>
-            ) : fetchErrorMsg.length > 0 ? (
-              <p className="text-danger">{fetchErrorMsg}</p>
-            ) : chartData["datasets"].length === 0 ? (
-              <p>No data</p>
-            ) : (
-              <Line options={chartOptions} data={chartData} />
-            )}
-          </div>
+          <TrackerDataChart
+            isFetching={isFetching}
+            fetchErrorMsg={fetchErrorMsg}
+            chartData={chartData}
+          />
         </div>
         {deleteErrorMsg.length > 0 && (
           <p className="text-danger">{deleteErrorMsg}</p>
