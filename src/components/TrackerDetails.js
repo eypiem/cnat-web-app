@@ -15,7 +15,7 @@ export default function TrackerDetails({ trackerId }) {
     <>
       {isFetching ? (
         <h5 className="placeholder-wave">
-          <span class="placeholder col-2 placeholder-lg"></span>
+          <span className="placeholder col-2 placeholder-lg"></span>
         </h5>
       ) : fetchErrorMsg.length > 0 ? (
         <p className="text-danger">{fetchErrorMsg}</p>

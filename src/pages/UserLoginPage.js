@@ -10,13 +10,16 @@ export default function UserLoginPage() {
   const [isLoading, setIsloading] = useState(false);
   const [cookies, setCookie] = useCookies([REACT_APP_JWT_TOKEN_KEY]);
 
+  const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
+  const hasJwt = jwt !== "" && jwt != null;
+
   useEffect(() => {
     document.title = "CNAT | Login";
   }, []);
 
   return (
     <>
-      {(isLoggedIn || hasJWT()) && (
+      {(isLoggedIn || hasJwt) && (
         <Navigate to="/user-area/tracker" replace={true} />
       )}
       <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
@@ -109,12 +112,5 @@ export default function UserLoginPage() {
       path: "/",
       sameSite: "strict",
     });
-  }
-
-  function hasJWT() {
-    return (
-      cookies[REACT_APP_JWT_TOKEN_KEY] !== "" &&
-      cookies[REACT_APP_JWT_TOKEN_KEY] != null
-    );
   }
 }

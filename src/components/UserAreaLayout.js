@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 import UserLoginPage from "pages/UserLoginPage";
 import { useCookies } from "react-cookie";
+import jwt_decode from "jwt-decode";
 
 const { REACT_APP_JWT_TOKEN_KEY } = process.env;
 
@@ -10,7 +11,23 @@ export default function UserAreaLayout() {
     REACT_APP_JWT_TOKEN_KEY,
   ]);
 
-  return hasJWT() ? (
+  const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
+  const hasJwt = jwt !== "" && jwt != null;
+
+  useEffect(() => {
+    if (hasJwt) {
+      const decodedToken = jwt_decode(jwt);
+      const currentDate = new Date();
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        console.log("Token expired.");
+        logout();
+      } else {
+        console.log("Valid token");
+      }
+    }
+  }, []);
+
+  return hasJwt ? (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
@@ -42,7 +59,7 @@ export default function UserAreaLayout() {
           </div>
         </div>
       </nav>
-      <Outlet context={{ token: cookies[REACT_APP_JWT_TOKEN_KEY] }} />
+      <Outlet context={{ token: jwt }} />
     </>
   ) : (
     <UserLoginPage />
@@ -52,12 +69,5 @@ export default function UserAreaLayout() {
     removeCookie(REACT_APP_JWT_TOKEN_KEY, {
       path: "/",
     });
-  }
-
-  function hasJWT() {
-    return (
-      cookies[REACT_APP_JWT_TOKEN_KEY] !== "" &&
-      cookies[REACT_APP_JWT_TOKEN_KEY] != null
-    );
   }
 }
