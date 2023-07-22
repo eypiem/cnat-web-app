@@ -1,73 +1,70 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
 
 export default function UserLoginPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [cookies, setCookie] = useCookies([REACT_APP_JWT_TOKEN_KEY]);
-
+  const navigate = useNavigate();
   const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
-  const hasJwt = jwt !== "" && jwt != null;
 
   useEffect(() => {
     document.title = "CNAT | Login";
+    const hasJwt = jwt !== "" && jwt != null;
+    if (hasJwt) {
+      navigate("/user-area/dashboard");
+    }
   }, []);
 
   return (
-    <>
-      {(isLoggedIn || hasJwt) && (
-        <Navigate to="/user-area/tracker" replace={true} />
-      )}
-      <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
-        <h3>User Login</h3>
-        <form
-          className="d-flex flex-column align-items-center gap-2"
-          onSubmit={login}
-        >
-          <div>
-            <label htmlFor="from" className="form-label">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className="form-control"
-              aria-label="Email"
-              aria-describedby="addon-wrapping"
-            />
-          </div>
-          <div>
-            <label htmlFor="from" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="form-control"
-              aria-label="Password"
-              aria-describedby="addon-wrapping"
-            />
-          </div>
-          {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
-          {isLoading ? (
-            <div className="spinner-border text-primary" role="status"></div>
-          ) : (
-            <input
-              className="btn btn-primary w-100"
-              type="submit"
-              value="Login"
-            />
-          )}
-        </form>
-        <Link to="/register" className="btn btn-outline-secondary">
-          Register
-        </Link>
-      </div>
-    </>
+    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
+      <h3>User Login</h3>
+      <form
+        className="d-flex flex-column align-items-center gap-2"
+        onSubmit={login}
+      >
+        <div>
+          <label htmlFor="from" className="form-label">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            className="form-control"
+            aria-label="Email"
+            aria-describedby="addon-wrapping"
+          />
+        </div>
+        <div>
+          <label htmlFor="from" className="form-label">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            className="form-control"
+            aria-label="Password"
+            aria-describedby="addon-wrapping"
+          />
+        </div>
+        {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
+        {isLoading ? (
+          <div className="spinner-border text-primary" role="status"></div>
+        ) : (
+          <input
+            className="btn btn-primary w-100"
+            type="submit"
+            value="Login"
+          />
+        )}
+      </form>
+      <Link to="/register" className="btn btn-outline-secondary">
+        Register
+      </Link>
+    </div>
   );
 
   function login(e) {
@@ -89,7 +86,7 @@ export default function UserLoginPage() {
         if (res.ok) {
           res.json().then((json) => {
             storeJWT(json);
-            setIsLoggedIn(true);
+            navigate("/user-area/dashboard");
           });
         } else if (400 <= res.status && res.status < 500) {
           setErrorMsg("Incorrect credentials.");

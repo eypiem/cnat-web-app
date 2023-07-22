@@ -22,3 +22,18 @@ p {
   --secondary-color: #02020a;
   --accent-color: #63d2ff;
 }
+
+.leaflet-popup-content-wrapper {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+  width: unset;
+  margin: unset;
+  line-height: unset;
+}
+
+.leaflet-container .leaflet-popup-content-wrapper .leaflet-popup-content a {
+  color: var(--bs-btn-color);
+}

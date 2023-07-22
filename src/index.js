@@ -28,6 +28,7 @@ import ErrorPage from "pages/ErrorPage";
 import RootLayout from "components/RootLayout/RootLayout";
 import UserAreaLayout from "components/UserAreaLayout";
 import TrackerRegisterPage from "pages/TrackerRegisterPage";
+import DashboardPage from "pages/DashboardPage";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="login" element={<UserLoginPage />} />
           <Route path="register" element={<UserRegisterPage />} />
           <Route path="user-area" element={<UserAreaLayout />}>
+            <Route path="dashboard" element={<DashboardPage />} />
             <Route path="tracker">
               <Route index element={<TrackersPage />} />
               <Route path=":trackerId" element={<TrackerPage />} />

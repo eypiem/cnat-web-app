@@ -38,11 +38,20 @@ export default function UserAreaLayout() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  to="/user-area/tracker"
+                  to="/user-area/dashboard"
                   className="nav-link active"
                   aria-current="page"
                 >
                   Dashboard
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to="/user-area/tracker"
+                  className="nav-link active"
+                  aria-current="page"
+                >
+                  Trackers
                 </Link>
               </li>
               <li className="nav-item">
