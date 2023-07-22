@@ -56,7 +56,6 @@ export default function TrackerDetails({ trackerId }) {
       })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setName(json["name"]);
       })
       .catch((error) => {

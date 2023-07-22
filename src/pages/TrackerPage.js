@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, useParams, Navigate } from "react-router-dom";
+import { useOutletContext, useParams, useNavigate } from "react-router-dom";
 import TrackerDetails from "components/TrackerDetails";
 import TrackerDataForm from "components/TrackerDataForm";
 import TrackerDataChart from "components/TrackerDataChart";
+import TrackerDataTypes from "components/TrackerDataTypes";
+import TrackerDeleteButton from "components/TrackerDeleteButton";
 
 export default function TrackerPage() {
   const { REACT_APP_API_BASE_URL } = process.env;
   const { token } = useOutletContext();
-
   const { trackerId } = useParams();
+  const navigate = useNavigate();
 
   const [isFetching, setIsFetching] = useState(true);
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
 
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteErrorMsg, setDeleteErrorMsg] = useState("");
-
-  const [dataTypes, setDataTypes] = useState([]);
   const [chartData, setChartData] = useState({});
+  const [filteredChartData, setFilteredChartData] = useState({});
 
   const dateTimeFormatOptions = {
     year: "2-digit",
@@ -42,26 +40,14 @@ export default function TrackerPage() {
 
   return (
     <>
-      {isDeleted && <Navigate to=".." replace={true} />}
-      <div className=" container d-flex flex-column py-4 min-vh-100 gap-3">
+      <div className="container d-flex flex-column py-4 min-vh-100 gap-3">
         <TrackerDetails trackerId={trackerId} />
         <div className="d-flex border rounded">
           <div className="d-flex flex-column justify-content-between col-3 p-3 gap-3">
-            <div>
-              {dataTypes.map((e) => (
-                <div className="form-check" key={e}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id={e}
-                  />
-                  <label className="form-check-label" htmlFor={e}>
-                    {e}
-                  </label>
-                </div>
-              ))}
-            </div>
+            <TrackerDataTypes
+              chartData={chartData}
+              onSelect={filterChartData}
+            />
             <TrackerDataForm
               isFetching={isFetching}
               onfetchTrackerData={fetchTrackerData}
@@ -71,37 +57,32 @@ export default function TrackerPage() {
           <TrackerDataChart
             isFetching={isFetching}
             fetchErrorMsg={fetchErrorMsg}
-            chartData={chartData}
+            chartData={filteredChartData}
           />
         </div>
-        {deleteErrorMsg.length > 0 && (
-          <p className="text-danger">{deleteErrorMsg}</p>
-        )}
-        {isDeleting ? (
-          <div className="spinner-border text-danger" role="status"></div>
-        ) : (
-          <button
-            className="btn btn-outline-danger align-self-start"
-            onClick={deleteTracker}
-          >
-            Delete tracker
-          </button>
-        )}
+        <TrackerDeleteButton
+          trackerId={trackerId}
+          onDeleted={() => navigate("..")}
+        />
       </div>
     </>
   );
 
-  function updateDataTypes(json) {
-    let dataTypes = [];
-    json.forEach((e, _) =>
-      Object.keys(e["data"]).forEach(
-        (k, _) => dataTypes.indexOf(k) === -1 && dataTypes.push(k)
-      )
-    );
-    setDataTypes(dataTypes);
+  function filterChartData(selected) {
+    let ds = [];
+    chartData["datasets"].forEach((e) => {
+      if (selected.includes(e["label"])) {
+        ds.push(e);
+      }
+    });
+
+    setFilteredChartData({
+      labels: chartData["labels"],
+      datasets: ds,
+    });
   }
 
-  function updateChartData(json) {
+  function jsonToChartData(json) {
     let ds = [];
     let labels = [];
 
@@ -131,40 +112,10 @@ export default function TrackerPage() {
       });
     });
 
-    console.log(ds);
-    setChartData({
+    return {
       labels: labels,
       datasets: ds,
-    });
-  }
-
-  function deleteTracker() {
-    setIsDeleting(true);
-    setDeleteErrorMsg("");
-
-    const url = `${REACT_APP_API_BASE_URL}/tracker/delete/${trackerId}`;
-
-    fetch(url, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          setIsDeleted(true);
-        } else if (500 <= res.status && res.status < 600) {
-          setDeleteErrorMsg("Server error. Please try again later.");
-        } else {
-          console.error(`Unexpected error code: ${res.status}`);
-          setDeleteErrorMsg("Error making request.");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setDeleteErrorMsg("Error making request.");
-      })
-      .finally(() => setIsDeleting(false));
+    };
   }
 
   function fetchTrackerData(from, to) {
@@ -200,9 +151,8 @@ export default function TrackerPage() {
       })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
-        updateChartData(json);
-        updateDataTypes(json);
+        setChartData(jsonToChartData(json));
+        setFilteredChartData(jsonToChartData(json));
       })
       .catch((error) => {
         console.error(error);
