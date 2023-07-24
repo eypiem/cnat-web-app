@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+const { REACT_APP_API_BASE_URL } = process.env;
 
 const initPosition = [51.505, -0.09];
 
@@ -28,13 +30,15 @@ const trackerIcon = new L.Icon({
 });
 
 export default function DashboardPage() {
+  const { token } = useOutletContext();
+
   const [isFetching, setIsFetching] = useState(true);
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
-  const [trackersStatus, setTrackersStatus] = useState([]);
+  const [trackersLatestData, setTrackersLatestData] = useState([]);
 
   useEffect(() => {
     document.title = "CNAT | Dashboard";
-    fetchTrackersStatus();
+    fetchTrackersLatestData();
   }, []);
 
   return (
@@ -54,48 +58,86 @@ export default function DashboardPage() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {trackersStatus.map((e) => (
-            <Marker
-              position={[
-                e["data"]["location"]["long"],
-                e["data"]["location"]["lat"],
-              ]}
-              icon={trackerIcon}
-              key={e["tracker"]["id"]}
-            >
-              <Popup>
-                <div className="card p-0">
-                  <div className="card-body">
-                    <h5 className="card-title">{e["tracker"]["name"]}</h5>
-                    <h6 className="card-subtitle mb-2 font-monospace text-body-secondary">
-                      {e["tracker"]["id"]}
-                    </h6>
-                    <p className="card-text">
-                      Last update:{" "}
-                      {new Intl.DateTimeFormat(
-                        "en-GB",
-                        dateTimeFormatOptions
-                      ).format(new Date(e["timestamp"]))}
-                    </p>
-                    <Link
-                      to={`/user-area/tracker/${e["tracker"]["id"]}`}
-                      className="btn btn-primary btn-sm"
-                    >
-                      View
-                    </Link>
+          {trackersLatestData
+            .filter((e) => e["data"]["location"] != null)
+            .map((e) => (
+              <Marker
+                position={[
+                  e["data"]["location"]["lat"],
+                  e["data"]["location"]["long"],
+                ]}
+                icon={trackerIcon}
+                key={e["tracker"]["id"]}
+              >
+                <Popup>
+                  <div className="card p-0">
+                    <div className="card-body">
+                      <h5 className="card-title">{e["tracker"]["name"]}</h5>
+                      <h6 className="card-subtitle mb-2 font-monospace text-body-secondary">
+                        {e["tracker"]["id"]}
+                      </h6>
+                      <p className="card-text">
+                        Last update:{" "}
+                        {new Intl.DateTimeFormat(
+                          "en-GB",
+                          dateTimeFormatOptions
+                        ).format(new Date(e["timestamp"]))}
+                      </p>
+                      <Link
+                        to={`/user-area/tracker/${e["tracker"]["id"]}`}
+                        className="btn btn-primary btn-sm"
+                      >
+                        View
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+                </Popup>
+              </Marker>
+            ))}
         </MapContainer>
       )}
     </div>
   );
 
-  function fetchTrackersStatus() {
+  function fetchTrackersLatestData() {
     setFetchErrorMsg("");
-    ///TODO: Make API call
+
+    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get-latest`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res;
+        } else {
+          if (500 <= res.status && res.status < 600) {
+            setFetchErrorMsg("Server error. Please try again later.");
+          } else {
+            console.error(`Unexpected error code: ${res.status}`);
+            setFetchErrorMsg("Error fetching tracker data");
+          }
+          res.json().then((json) => {
+            console.error(json);
+          });
+          /// TODO: Subsequent .then() execute even after throwing
+          throw new Error("Error fetching tracker data");
+        }
+      })
+      .then((res) => res.json())
+      .then((json) => {
+        setTrackersLatestData(json);
+      })
+      .catch((error) => {
+        console.error(error);
+        setFetchErrorMsg("Error fetching tracker data");
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
     setIsFetching(false);
   }
 }
