@@ -18,9 +18,6 @@ export default function HomePage() {
           Login
         </Link>
       </span>
-      <Link to="user-area/tracker" className="btn btn-outline-success">
-        Trackers
-      </Link>
     </div>
   );
 }

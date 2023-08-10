@@ -29,7 +29,7 @@ export default function TrackerDetails({ trackerId }) {
   function fetchTracker() {
     setFetchErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/tracker/get/${trackerId}`;
+    const url = `${REACT_APP_API_BASE_URL}/trackers/${trackerId}`;
 
     fetch(url, {
       method: "GET",

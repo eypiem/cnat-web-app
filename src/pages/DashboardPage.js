@@ -102,7 +102,7 @@ export default function DashboardPage() {
   function fetchTrackersLatestData() {
     setFetchErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get-latest`;
+    const url = `${REACT_APP_API_BASE_URL}/trackers/data/latest`;
 
     fetch(url, {
       method: "GET",

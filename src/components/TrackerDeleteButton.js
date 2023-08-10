@@ -30,7 +30,7 @@ export default function TrackerDeleteButton({ trackerId, onDeleted }) {
     setIsDeleting(true);
     setDeleteErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/tracker/delete/${trackerId}`;
+    const url = `${REACT_APP_API_BASE_URL}/trackers/${trackerId}`;
 
     fetch(url, {
       method: "DELETE",

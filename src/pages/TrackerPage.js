@@ -122,7 +122,7 @@ export default function TrackerPage() {
     setIsFetching(true);
     setFetchErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/tracker-data/get/${trackerId}?from=${
+    const url = `${REACT_APP_API_BASE_URL}/trackers/${trackerId}/data?from=${
       from ?? ""
     }&to=${to ?? ""}`;
 
