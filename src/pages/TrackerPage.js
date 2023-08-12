@@ -5,6 +5,7 @@ import TrackerDataForm from "components/TrackerDataForm";
 import TrackerDataChart from "components/TrackerDataChart";
 import TrackerDataTypes from "components/TrackerDataTypes";
 import TrackerDeleteButton from "components/TrackerDeleteButton";
+import TrackerMap from "components/TrackerMap";
 
 export default function TrackerPage() {
   const { REACT_APP_API_BASE_URL } = process.env;
@@ -15,6 +16,7 @@ export default function TrackerPage() {
   const [isFetching, setIsFetching] = useState(true);
   const [fetchErrorMsg, setFetchErrorMsg] = useState("");
 
+  const [json, setJson] = useState({});
   const [chartData, setChartData] = useState({});
   const [filteredChartData, setFilteredChartData] = useState({});
 
@@ -39,9 +41,9 @@ export default function TrackerPage() {
   }, []);
 
   return (
-    <>
-      <div className="container d-flex flex-column py-4 min-vh-100 gap-3">
-        <TrackerDetails trackerId={trackerId} />
+    <div className="container d-flex flex-column py-4 min-vh-100 gap-3">
+      <TrackerDetails trackerId={trackerId} />
+      <div className="d-flex flex-column border rounded">
         <div className="d-flex border rounded">
           <div className="d-flex flex-column justify-content-between col-3 p-3 gap-3">
             <TrackerDataTypes
@@ -60,12 +62,13 @@ export default function TrackerPage() {
             chartData={filteredChartData}
           />
         </div>
-        <TrackerDeleteButton
-          trackerId={trackerId}
-          onDeleted={() => navigate("..")}
-        />
+        <TrackerMap json={json} />
       </div>
-    </>
+      <TrackerDeleteButton
+        trackerId={trackerId}
+        onDeleted={() => navigate("..")}
+      />
+    </div>
   );
 
   function filterChartData(selected) {
@@ -104,9 +107,6 @@ export default function TrackerPage() {
           ds.push({
             label: k,
             data: [trackerData["data"][k]],
-            /// TODO: Generate colors
-            borderColor: "rgb(53, 162, 235)",
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
           });
         }
       });
@@ -151,6 +151,7 @@ export default function TrackerPage() {
       })
       .then((res) => res.json())
       .then((json) => {
+        setJson(json);
         setChartData(jsonToChartData(json));
         setFilteredChartData(jsonToChartData(json));
       })

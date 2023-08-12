@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Colors,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -16,7 +17,13 @@ export default function TrackerDataChart({
   fetchErrorMsg,
   chartData,
 }) {
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Colors
+  );
 
   const chartOptions = {
     responsive: true,
@@ -24,7 +31,11 @@ export default function TrackerDataChart({
       legend: {
         position: "bottom",
       },
+      colors: {
+        forceOverride: true,
+      },
     },
+    tension: 0.4,
   };
 
   return (

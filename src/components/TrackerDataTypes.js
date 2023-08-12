@@ -8,7 +8,8 @@ export default function TrackerDataTypes({ chartData, onSelect }) {
       <h6>Data types:</h6>
       <div className="d-flex flex-wrap gap-3">
         {chartData["datasets"]
-          ?.map((e) => e["label"])
+          ?.filter((e) => typeof e["data"][0] === "number")
+          .map((e) => e["label"])
           .map((e) => (
             <div className="form-check" key={e}>
               <input
