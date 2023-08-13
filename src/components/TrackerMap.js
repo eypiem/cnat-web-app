@@ -46,13 +46,10 @@ export default function TrackerMap({ json }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {json
-          ?.filter((e) => e["data"]["location"] != undefined)
+          ?.filter((e) => e["data"]["coordinates"] != undefined)
           .map((e) => (
             <Marker
-              position={[
-                e["data"]["location"]["lat"],
-                e["data"]["location"]["long"],
-              ]}
+              position={e["data"]["coordinates"]}
               icon={trackerIcon}
               key={e["timestamp"]}
             >
@@ -63,7 +60,7 @@ export default function TrackerMap({ json }) {
                       {JSON.stringify(
                         e["data"],
                         (key, value) => {
-                          if (key === "location") {
+                          if (key === "coordinates") {
                             return undefined;
                           }
                           return value;
@@ -84,11 +81,8 @@ export default function TrackerMap({ json }) {
           ))}
         <Polyline
           positions={json
-            ?.filter((e) => e["data"]["location"] != undefined)
-            .map((e) => [
-              e["data"]["location"]["lat"],
-              e["data"]["location"]["long"],
-            ])}
+            ?.filter((e) => e["data"]["coordinates"] != undefined)
+            .map((e) => e["data"]["coordinates"])}
         />
       </MapContainer>
     )

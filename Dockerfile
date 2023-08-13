@@ -1,6 +1,5 @@
 FROM node:18-alpine as builder
 ENV NODE_ENV production
-ENV REACT_APP_API_BASE_URL http://localhost:8080
 WORKDIR /app
 COPY package.json .
 COPY package-lock.json .

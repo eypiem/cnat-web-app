@@ -59,13 +59,10 @@ export default function DashboardPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           {trackersLatestData
-            .filter((e) => e["data"]["location"] != null)
+            .filter((e) => e["data"]["coordinates"] != null)
             .map((e) => (
               <Marker
-                position={[
-                  e["data"]["location"]["lat"],
-                  e["data"]["location"]["long"],
-                ]}
+                position={e["data"]["coordinates"]}
                 icon={trackerIcon}
                 key={e["tracker"]["id"]}
               >
