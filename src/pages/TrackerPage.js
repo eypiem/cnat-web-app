@@ -96,18 +96,20 @@ export default function TrackerPage() {
         )
       );
       Object.keys(trackerData["data"]).forEach((k, _) => {
-        let labelExist = false;
-        ds.forEach((e) => {
-          if (k === e["label"]) {
-            e["data"].push(trackerData["data"][k]);
-            labelExist = true;
-          }
-        });
-        if (!labelExist) {
-          ds.push({
-            label: k,
-            data: [trackerData["data"][k]],
+        if (k !== "coordinates") {
+          let labelExist = false;
+          ds.forEach((e) => {
+            if (k === e["label"]) {
+              e["data"].push(trackerData["data"][k]);
+              labelExist = true;
+            }
           });
+          if (!labelExist) {
+            ds.push({
+              label: k,
+              data: [trackerData["data"][k]],
+            });
+          }
         }
       });
     });

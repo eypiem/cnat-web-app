@@ -41,7 +41,7 @@ export default function TrackerRegisterForm({ setNewTracker }) {
     setErrorMsg("");
     setIsloading(true);
     const { name } = e.target.elements;
-    const url = `${REACT_APP_API_BASE_URL}/tracker/register`;
+    const url = `${REACT_APP_API_BASE_URL}/trackers`;
 
     fetch(url, {
       method: "POST",
@@ -52,10 +52,8 @@ export default function TrackerRegisterForm({ setNewTracker }) {
       body: JSON.stringify({ name: name.value }),
     })
       .then((res) => {
-        if (res.status === 200) {
-          res.json().then((json) => {
-            setNewTracker(json);
-          });
+        if (res.ok) {
+          res.json().then(setNewTracker);
         } else if (500 <= res.status && res.status < 600) {
           setErrorMsg("Server error. Please try again later.");
         } else {
