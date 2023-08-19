@@ -20,14 +20,14 @@ export default function UserLoginPage() {
   }, []);
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
+    <div className="d-flex flex-column justify-content-center align-items-center gap-4 py-4 min-vh-100">
       <h3>User Login</h3>
       <form
-        className="d-flex flex-column align-items-center gap-2"
+        className="d-flex flex-column align-items-center gap-2 col-2"
         onSubmit={login}
       >
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="email" className="form-label">
             Email
           </label>
           <input
@@ -35,11 +35,10 @@ export default function UserLoginPage() {
             type="email"
             className="form-control"
             aria-label="Email"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="password" className="form-label">
             Password
           </label>
           <input
@@ -47,10 +46,11 @@ export default function UserLoginPage() {
             type="password"
             className="form-control"
             aria-label="Password"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
+        {errorMsg.length > 0 && (
+          <p className="text-danger text-center">{errorMsg}</p>
+        )}
         {isLoading ? (
           <div className="spinner-border text-primary" role="status"></div>
         ) : (
@@ -73,7 +73,7 @@ export default function UserLoginPage() {
     setIsloading(true);
 
     const { email, password } = e.target.elements;
-    const url = `${REACT_APP_API_BASE_URL}/auth/login`;
+    const url = `${REACT_APP_API_BASE_URL}/users/auth`;
 
     fetch(url, {
       method: "POST",
@@ -89,17 +89,17 @@ export default function UserLoginPage() {
             navigate("/user-area/dashboard");
           });
         } else if (400 <= res.status && res.status < 500) {
-          setErrorMsg("Incorrect credentials.");
+          throw new Error("Incorrect credentials");
         } else if (500 <= res.status && res.status < 600) {
-          setErrorMsg("Server error. Please try again later.");
+          throw new Error("Server error. Please try again later.");
         } else {
           console.error(`Unexpected error code: ${res.status}`);
-          setErrorMsg("Error fetching data.");
+          throw new Error("Error fetching data");
         }
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("Error fetching data.");
+        setErrorMsg(error.message);
       })
       .finally(() => setIsloading(false));
   }

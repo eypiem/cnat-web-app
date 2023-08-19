@@ -110,27 +110,20 @@ export default function DashboardPage() {
       .then((res) => {
         if (res.ok) {
           return res;
+        } else if (500 <= res.status && res.status < 600) {
+          throw new Error("Server error. Please try again later.");
         } else {
-          if (500 <= res.status && res.status < 600) {
-            setFetchErrorMsg("Server error. Please try again later.");
-          } else {
-            console.error(`Unexpected error code: ${res.status}`);
-            setFetchErrorMsg("Error fetching tracker data");
-          }
-          res.json().then((json) => {
-            console.error(json);
-          });
-          /// TODO: Subsequent .then() execute even after throwing
+          console.error(`Unexpected error code: ${res.status}`);
           throw new Error("Error fetching tracker data");
         }
       })
       .then((res) => res.json())
       .then((json) => {
-        setTrackersLatestData(json);
+        setTrackersLatestData(json["latestTrackerData"]);
       })
       .catch((error) => {
         console.error(error);
-        setFetchErrorMsg("Error fetching tracker data");
+        setFetchErrorMsg(error.message);
       })
       .finally(() => {
         setIsFetching(false);

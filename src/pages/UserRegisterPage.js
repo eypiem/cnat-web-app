@@ -20,14 +20,14 @@ export default function UserRegisterPage() {
   }, []);
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 gap-4">
+    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4 gap-4">
       <h3>User Registration</h3>
       <form
-        className="d-flex flex-column align-items-center gap-2"
+        className="d-flex flex-column align-items-center gap-2 col-2"
         onSubmit={register}
       >
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="firstName" className="form-label">
             First Name
           </label>
           <input
@@ -35,11 +35,10 @@ export default function UserRegisterPage() {
             type="text"
             className="form-control"
             aria-label="First Name"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="lastName" className="form-label">
             Last Name
           </label>
           <input
@@ -47,11 +46,10 @@ export default function UserRegisterPage() {
             type="text"
             className="form-control"
             aria-label="Last Name"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="email" className="form-label">
             Email
           </label>
           <input
@@ -59,11 +57,10 @@ export default function UserRegisterPage() {
             type="email"
             className="form-control"
             aria-label="Email"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        <div>
-          <label htmlFor="from" className="form-label">
+        <div className="w-100">
+          <label htmlFor="password" className="form-label">
             Password
           </label>
           <input
@@ -71,10 +68,11 @@ export default function UserRegisterPage() {
             type="password"
             className="form-control"
             aria-label="Password"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
+        {errorMsg.length > 0 && (
+          <p className="text-danger text-center">{errorMsg}</p>
+        )}
         {isLoading ? (
           <div className="spinner-border text-primary" role="status"></div>
         ) : (
@@ -97,7 +95,7 @@ export default function UserRegisterPage() {
     setIsloading(true);
 
     const { firstName, lastName, email, password } = e.target.elements;
-    const url = `${REACT_APP_API_BASE_URL}/user/register`;
+    const url = `${REACT_APP_API_BASE_URL}/users`;
 
     fetch(url, {
       method: "POST",
@@ -118,15 +116,15 @@ export default function UserRegisterPage() {
             navigate("/login");
           });
         } else if (500 <= res.status && res.status < 600) {
-          setErrorMsg("Server error. Please try again later.");
+          throw "Server error. Please try again later.";
         } else {
           console.error(`Unexpected error code: ${res.status}`);
-          setErrorMsg("Error making request.");
+          throw "Error making request";
         }
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("Error making request.");
+        setErrorMsg(error.message);
       })
       .finally(() => setIsloading(false));
   }

@@ -10,27 +10,34 @@ export default function TrackerRegisterForm({ setNewTracker }) {
   const [isLoading, setIsloading] = useState(false);
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center gap-4">
+    <div className="d-flex flex-column justify-content-center align-items-center gap-4 py-4 min-vh-100">
       <h3>Tracker Registration</h3>
       <form
-        className="d-flex flex-column align-items-center gap-2"
+        className="d-flex flex-column align-items-center gap-2 col-2"
         onSubmit={register}
       >
-        <div className="input-group flex-nowrap">
+        <div className="w-100">
+          <label htmlFor="name" className="form-label">
+            Tracker Name
+          </label>
           <input
             id="name"
             type="text"
             className="form-control"
-            placeholder="Name"
             aria-label="Name"
-            aria-describedby="addon-wrapping"
           />
         </div>
-        {errorMsg.length > 0 && <p className="text-danger">{errorMsg}</p>}
+        {errorMsg.length > 0 && (
+          <p className="text-danger text-center">{errorMsg}</p>
+        )}
         {isLoading ? (
           <div className="spinner-border text-primary" role="status"></div>
         ) : (
-          <input className="btn btn-primary" type="submit" value="Register" />
+          <input
+            className="btn btn-primary w-100"
+            type="submit"
+            value="Register"
+          />
         )}
       </form>
     </div>
@@ -55,15 +62,15 @@ export default function TrackerRegisterForm({ setNewTracker }) {
         if (res.ok) {
           res.json().then(setNewTracker);
         } else if (500 <= res.status && res.status < 600) {
-          setErrorMsg("Server error. Please try again later.");
+          throw new Error("Server error. Please try again later.");
         } else {
           console.error(`Unexpected error code: ${res.status}`);
-          setErrorMsg("Error making request.");
+          throw new Error("Error making request");
         }
       })
       .catch((error) => {
         console.error(error);
-        setErrorMsg("Error making request.");
+        setErrorMsg(error.message);
       })
       .finally(() => setIsloading(false));
   }

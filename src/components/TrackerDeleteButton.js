@@ -42,15 +42,15 @@ export default function TrackerDeleteButton({ trackerId, onDeleted }) {
         if (res.ok) {
           onDeleted();
         } else if (500 <= res.status && res.status < 600) {
-          setDeleteErrorMsg("Server error. Please try again later.");
+          throw new Error("Server error. Please try again later.");
         } else {
           console.error(`Unexpected error code: ${res.status}`);
-          setDeleteErrorMsg("Error making request.");
+          throw new Error("Error making request");
         }
       })
       .catch((error) => {
         console.error(error);
-        setDeleteErrorMsg("Error making request.");
+        setDeleteErrorMsg(error.message);
       })
       .finally(() => setIsDeleting(false));
   }

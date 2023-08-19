@@ -39,6 +39,11 @@ export default function TrackersPage() {
           </div>
         ) : fetchErrorMsg.length > 0 ? (
           <p className="text-danger col-12">{fetchErrorMsg}</p>
+        ) : trackers.length === 0 ? (
+          <p className="col-12">
+            You have no trackers. Click on "register new tracker" to create a
+            new one.
+          </p>
         ) : (
           trackers.map((e) => <Tracker key={e.id} tracker={e} />)
         )}
@@ -60,27 +65,20 @@ export default function TrackersPage() {
       .then((res) => {
         if (res.ok) {
           return res;
+        } else if (500 <= res.status && res.status < 600) {
+          throw new Error("Server error. Please try again later.");
         } else {
-          if (500 <= res.status && res.status < 600) {
-            setFetchErrorMsg("Server error. Please try again later.");
-          } else {
-            console.error(`Unexpected error code: ${res.status}`);
-            setFetchErrorMsg("Error fetching trackers");
-          }
-          res.json().then((json) => {
-            console.error(json);
-          });
-          /// TODO: Subsequent .then() execute even after throwing
+          console.error(`Unexpected error code: ${res.status}`);
           throw new Error("Error fetching trackers");
         }
       })
       .then((res) => res.json())
       .then((json) => {
-        setTrackers(json);
+        setTrackers(json["trackers"]);
       })
       .catch((error) => {
         console.error(error);
-        setFetchErrorMsg("Error fetching trackers");
+        setFetchErrorMsg(error.message);
       })
       .finally(() => {
         setIsFetching(false);

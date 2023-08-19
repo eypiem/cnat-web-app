@@ -10,13 +10,9 @@ export default function TrackerRegisterPage() {
     document.title = "CNAT | Tracker Registration";
   }, []);
 
-  return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100">
-      {Object.keys(newTracker).length === 0 ? (
-        <TrackerRegisterForm setNewTracker={setNewTracker} />
-      ) : (
-        <TrackerRegisterResult newTracker={newTracker} />
-      )}
-    </div>
+  return Object.keys(newTracker).length === 0 ? (
+    <TrackerRegisterForm setNewTracker={setNewTracker} />
+  ) : (
+    <TrackerRegisterResult newTracker={newTracker} />
   );
 }

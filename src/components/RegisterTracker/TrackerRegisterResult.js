@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function TrackerRegisterResult({ newTracker }) {
   return (
-    <div className="d-flex flex-column py-4 align-items-center gap-3">
+    <div className="d-flex flex-column justify-content-center align-items-center gap-4 py-4 min-vh-100">
       <div className="card col-4 p-0">
         <div className="card-body px-0 pb-0">
           <h5 className="card-title px-3">Tracker Name</h5>

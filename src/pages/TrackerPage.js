@@ -28,6 +28,7 @@ export default function TrackerPage() {
     minute: "2-digit",
     second: "2-digit",
     timeZoneName: "short",
+    timeZone: "UTC",
     hour12: false,
   };
 
@@ -137,29 +138,24 @@ export default function TrackerPage() {
       .then((res) => {
         if (res.ok) {
           return res;
+        } else if (res.status === 404) {
+          throw new Error("No data");
+        } else if (500 <= res.status && res.status < 600) {
+          throw new Error("Server error. Please try again later.");
         } else {
-          if (500 <= res.status && res.status < 600) {
-            setFetchErrorMsg("Server error. Please try again later");
-          } else {
-            console.error(`Unexpected error code: ${res.status}`);
-            setFetchErrorMsg("Error fetching data");
-          }
-          res.json().then((json) => {
-            console.error(json);
-          });
-          /// TODO: Subsequent .then() execute even after throwing
+          console.error(`Unexpected error code: ${res.status}`);
           throw new Error("Error fetching data");
         }
       })
       .then((res) => res.json())
       .then((json) => {
-        setJson(json);
-        setChartData(jsonToChartData(json));
-        setFilteredChartData(jsonToChartData(json));
+        setJson(json["trackerData"]);
+        setChartData(jsonToChartData(json["trackerData"]));
+        setFilteredChartData(jsonToChartData(json["trackerData"]));
       })
       .catch((error) => {
         console.error(error);
-        setFetchErrorMsg("Error fetching data");
+        setFetchErrorMsg(error.message);
       })
       .finally(() => {
         setIsFetching(false);
