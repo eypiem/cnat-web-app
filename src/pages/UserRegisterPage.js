@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import JWT_COOKIE_KEY from "constants";
 
-const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
-
+/**
+ * This component represents the user registration page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function UserRegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [cookies, setCookie] = useCookies([REACT_APP_JWT_TOKEN_KEY]);
+  const [cookies] = useCookies([JWT_COOKIE_KEY]);
   const navigate = useNavigate();
-  const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
+  const jwt = cookies[JWT_COOKIE_KEY];
 
   useEffect(() => {
     document.title = "CNAT | Register";
@@ -17,7 +21,7 @@ export default function UserRegisterPage() {
     if (hasJwt) {
       navigate("/user-area/dashboard");
     }
-  }, []);
+  }, [jwt, navigate]);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 py-4 gap-4">
@@ -35,6 +39,7 @@ export default function UserRegisterPage() {
             type="text"
             className="form-control"
             aria-label="First Name"
+            required
           />
         </div>
         <div className="w-100">
@@ -46,6 +51,7 @@ export default function UserRegisterPage() {
             type="text"
             className="form-control"
             aria-label="Last Name"
+            required
           />
         </div>
         <div className="w-100">
@@ -57,6 +63,7 @@ export default function UserRegisterPage() {
             type="email"
             className="form-control"
             aria-label="Email"
+            required
           />
         </div>
         <div className="w-100">
@@ -68,6 +75,7 @@ export default function UserRegisterPage() {
             type="password"
             className="form-control"
             aria-label="Password"
+            required
           />
         </div>
         {errorMsg.length > 0 && (
@@ -89,13 +97,18 @@ export default function UserRegisterPage() {
     </div>
   );
 
+  /**
+   * Sends a user register request from the form values and navigates to the login page if successful.
+   *
+   * @param e event of form containing firstName, lastName, email, and password input fields
+   */
   function register(e) {
     e.preventDefault();
     setErrorMsg("");
     setIsloading(true);
 
     const { firstName, lastName, email, password } = e.target.elements;
-    const url = `${REACT_APP_API_BASE_URL}/users`;
+    const url = `/api/users`;
 
     fetch(url, {
       method: "POST",
@@ -111,15 +124,20 @@ export default function UserRegisterPage() {
     })
       .then((res) => {
         if (res.ok) {
+          navigate("/login");
+        } else if (res.status === 400) {
           res.json().then((json) => {
-            console.log(res);
-            navigate("/login");
+            if (json["validationErrors"] != null) {
+              setErrorMsg(
+                json["validationErrors"].map((e) => e["error"]).join(",\n")
+              );
+            }
           });
         } else if (500 <= res.status && res.status < 600) {
-          throw "Server error. Please try again later.";
+          throw new Error("Server error. Please try again later.");
         } else {
           console.error(`Unexpected error code: ${res.status}`);
-          throw "Error making request";
+          throw new Error("Error making request");
         }
       })
       .catch((error) => {

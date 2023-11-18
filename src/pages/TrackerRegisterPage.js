@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import TrackerRegisterForm from "components/RegisterTracker/TrackerRegisterForm";
-import TrackerRegisterResult from "components/RegisterTracker/TrackerRegisterResult";
+import TrackerRegisterForm from "components/TrackerRegisterForm";
+import TrackerRegisterResult from "components/TrackerRegisterResult";
 
+/**
+ * This component represents the tracker registration page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackerRegisterPage() {
   const [newTracker, setNewTracker] = useState({});
 
@@ -11,7 +16,7 @@ export default function TrackerRegisterPage() {
   }, []);
 
   return Object.keys(newTracker).length === 0 ? (
-    <TrackerRegisterForm setNewTracker={setNewTracker} />
+    <TrackerRegisterForm onTrackerRegister={setNewTracker} />
   ) : (
     <TrackerRegisterResult newTracker={newTracker} />
   );

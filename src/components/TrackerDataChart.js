@@ -5,13 +5,16 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  Title,
-  Tooltip,
   Legend,
   Colors,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
+/**
+ * This component represents a chart.js line chart displaying the provided data.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackerDataChart({
   isFetching,
   fetchErrorMsg,
@@ -22,6 +25,7 @@ export default function TrackerDataChart({
     LinearScale,
     PointElement,
     LineElement,
+    Legend,
     Colors
   );
 
@@ -29,7 +33,8 @@ export default function TrackerDataChart({
     responsive: true,
     plugins: {
       legend: {
-        position: "bottom",
+        display: true,
+        position: "top",
       },
       colors: {
         forceOverride: true,

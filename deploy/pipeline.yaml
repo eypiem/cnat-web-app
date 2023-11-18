@@ -1,0 +1,9 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: cnat-web-app-cd
+description: CNAT Web App CD pipeline
+serialPipeline:
+  stages:
+    - targetId: staging
+    - targetId: prod

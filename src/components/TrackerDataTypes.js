@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 
+/**
+ * This component displays checkboxes for each of the labels in the provided chart data
+ * and notifies of the changes through the provied callback.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackerDataTypes({ chartData, onSelect }) {
   const [selected, setSelected] = useState([]);
 

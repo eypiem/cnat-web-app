@@ -11,6 +11,12 @@ import "leaflet/dist/leaflet.css";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
+/**
+ * This component represents a leaflet map displaying tracker data coordinates.
+ *
+ * @param json json array containg tracker data
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackerMap({ json }) {
   const initPosition = [51.505, -0.09];
 
@@ -46,7 +52,7 @@ export default function TrackerMap({ json }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {json
-          ?.filter((e) => e["data"]["coordinates"] != undefined)
+          ?.filter((e) => e["data"]["coordinates"] !== undefined)
           .map((e) => (
             <Marker
               position={e["data"]["coordinates"]}
@@ -81,7 +87,7 @@ export default function TrackerMap({ json }) {
           ))}
         <Polyline
           positions={json
-            ?.filter((e) => e["data"]["coordinates"] != undefined)
+            ?.filter((e) => e["data"]["coordinates"] !== undefined)
             .map((e) => e["data"]["coordinates"])}
         />
       </MapContainer>

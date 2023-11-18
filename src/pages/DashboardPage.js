@@ -6,8 +6,6 @@ import "leaflet/dist/leaflet.css";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
-const { REACT_APP_API_BASE_URL } = process.env;
-
 const initPosition = [51.505, -0.09];
 
 const dateTimeFormatOptions = {
@@ -29,6 +27,11 @@ const trackerIcon = new L.Icon({
   popupAnchor: [0, -41],
 });
 
+/**
+ * This component represents the user dashboard page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function DashboardPage() {
   const { token } = useOutletContext();
 
@@ -38,8 +41,43 @@ export default function DashboardPage() {
 
   useEffect(() => {
     document.title = "CNAT | Dashboard";
+
+    const fetchTrackersLatestData = () => {
+      setFetchErrorMsg("");
+
+      const url = `/api/trackers/data/latest`;
+
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res;
+          } else if (500 <= res.status && res.status < 600) {
+            throw new Error("Server error. Please try again later.");
+          } else {
+            console.error(`Unexpected error code: ${res.status}`);
+            throw new Error("Error fetching tracker data");
+          }
+        })
+        .then((res) => res.json())
+        .then((json) => {
+          setTrackersLatestData(json["latestTrackerData"]);
+        })
+        .catch((error) => {
+          console.error(error);
+          setFetchErrorMsg(error.message);
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+      setIsFetching(false);
+    };
     fetchTrackersLatestData();
-  }, []);
+  }, [token]);
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -95,39 +133,4 @@ export default function DashboardPage() {
       )}
     </div>
   );
-
-  function fetchTrackersLatestData() {
-    setFetchErrorMsg("");
-
-    const url = `${REACT_APP_API_BASE_URL}/trackers/data/latest`;
-
-    fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res;
-        } else if (500 <= res.status && res.status < 600) {
-          throw new Error("Server error. Please try again later.");
-        } else {
-          console.error(`Unexpected error code: ${res.status}`);
-          throw new Error("Error fetching tracker data");
-        }
-      })
-      .then((res) => res.json())
-      .then((json) => {
-        setTrackersLatestData(json["latestTrackerData"]);
-      })
-      .catch((error) => {
-        console.error(error);
-        setFetchErrorMsg(error.message);
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-    setIsFetching(false);
-  }
 }

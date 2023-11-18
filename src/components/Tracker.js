@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * This component represents a bootstrap card containing a tracker's information.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function Tracker({ tracker }) {
   return (
     <div className="col-3">

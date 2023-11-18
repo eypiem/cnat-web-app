@@ -1,31 +1,45 @@
-import React, { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { Link, Outlet } from "react-router-dom";
 import UserLoginPage from "pages/UserLoginPage";
 import { useCookies } from "react-cookie";
 import jwt_decode from "jwt-decode";
+import JWT_COOKIE_KEY from "constants";
 
-const { REACT_APP_JWT_TOKEN_KEY } = process.env;
-
+/**
+ * This component represents the root layout for pages requiring user login.
+ * Provides the JWT as context to all children.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function UserAreaLayout() {
-  const [cookies, setCookie, removeCookie] = useCookies([
-    REACT_APP_JWT_TOKEN_KEY,
-  ]);
+  const [cookies, , removeCookie] = useCookies([JWT_COOKIE_KEY]);
 
-  const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
+  const jwt = cookies[JWT_COOKIE_KEY];
   const hasJwt = jwt !== "" && jwt != null;
 
+  /**
+   * Logs out by deleting the token cookie.
+   */
+  const logout = useCallback(() => {
+    removeCookie(JWT_COOKIE_KEY, {
+      path: "/",
+    });
+  }, [removeCookie]);
+
   useEffect(() => {
-    if (hasJwt) {
+    const jwtHasExpired = () => {
       const decodedToken = jwt_decode(jwt);
       const currentDate = new Date();
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        console.log("Token expired.");
+      return decodedToken.exp * 1000 < currentDate.getTime();
+    };
+
+    if (hasJwt) {
+      if (jwtHasExpired()) {
+        console.warn("Token expired.");
         logout();
-      } else {
-        console.log("Valid token");
       }
     }
-  }, []);
+  }, [hasJwt, jwt, logout]);
 
   return hasJwt ? (
     <>
@@ -73,10 +87,4 @@ export default function UserAreaLayout() {
   ) : (
     <UserLoginPage />
   );
-
-  function logout() {
-    removeCookie(REACT_APP_JWT_TOKEN_KEY, {
-      path: "/",
-    });
-  }
 }

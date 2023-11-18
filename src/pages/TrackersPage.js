@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import Tracker from "components/Tracker";
 import { Link, useOutletContext } from "react-router-dom";
 
-const { REACT_APP_API_BASE_URL } = process.env;
-
+/**
+ * This component represents the trackers page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackersPage() {
   const { token } = useOutletContext();
 
@@ -13,8 +16,42 @@ export default function TrackersPage() {
 
   useEffect(() => {
     document.title = "CNAT | Trackers";
+
+    const fetchTrackers = () => {
+      setFetchErrorMsg("");
+
+      const url = `/api/trackers`;
+
+      fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res;
+          } else if (500 <= res.status && res.status < 600) {
+            throw new Error("Server error. Please try again later.");
+          } else {
+            console.error(`Unexpected error code: ${res.status}`);
+            throw new Error("Error fetching trackers");
+          }
+        })
+        .then((res) => res.json())
+        .then((json) => {
+          setTrackers(json["trackers"]);
+        })
+        .catch((error) => {
+          console.error(error);
+          setFetchErrorMsg(error.message);
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+    };
     fetchTrackers();
-  }, []);
+  }, [token]);
 
   return (
     <div className="container d-flex flex-column py-4 gap-4 min-vh-100">
@@ -50,38 +87,4 @@ export default function TrackersPage() {
       </div>
     </div>
   );
-
-  function fetchTrackers() {
-    setFetchErrorMsg("");
-
-    const url = `${REACT_APP_API_BASE_URL}/trackers`;
-
-    fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res;
-        } else if (500 <= res.status && res.status < 600) {
-          throw new Error("Server error. Please try again later.");
-        } else {
-          console.error(`Unexpected error code: ${res.status}`);
-          throw new Error("Error fetching trackers");
-        }
-      })
-      .then((res) => res.json())
-      .then((json) => {
-        setTrackers(json["trackers"]);
-      })
-      .catch((error) => {
-        console.error(error);
-        setFetchErrorMsg(error.message);
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }
 }

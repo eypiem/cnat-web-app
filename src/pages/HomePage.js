@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * This component represents the home page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function HomePage() {
   useEffect(() => {
     document.title = "CNAT | Home";

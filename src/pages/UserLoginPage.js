@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import JWT_COOKIE_KEY from "constants";
 
-const { REACT_APP_API_BASE_URL, REACT_APP_JWT_TOKEN_KEY } = process.env;
-
+/**
+ * This component represents the user login page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function UserLoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [cookies, setCookie] = useCookies([REACT_APP_JWT_TOKEN_KEY]);
+  const [cookies, setCookie] = useCookies([JWT_COOKIE_KEY]);
   const navigate = useNavigate();
-  const jwt = cookies[REACT_APP_JWT_TOKEN_KEY];
+  const jwt = cookies[JWT_COOKIE_KEY];
 
   useEffect(() => {
     document.title = "CNAT | Login";
@@ -17,7 +21,7 @@ export default function UserLoginPage() {
     if (hasJwt) {
       navigate("/user-area/dashboard");
     }
-  }, []);
+  }, [jwt, navigate]);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center gap-4 py-4 min-vh-100">
@@ -35,6 +39,7 @@ export default function UserLoginPage() {
             type="email"
             className="form-control"
             aria-label="Email"
+            required
           />
         </div>
         <div className="w-100">
@@ -46,6 +51,7 @@ export default function UserLoginPage() {
             type="password"
             className="form-control"
             aria-label="Password"
+            required
           />
         </div>
         {errorMsg.length > 0 && (
@@ -67,13 +73,18 @@ export default function UserLoginPage() {
     </div>
   );
 
+  /**
+   * Sends a user authentication request from the form values and navigates to the user dashboard page if successful.
+   *
+   * @param e event of form containing email, and password input fields
+   */
   function login(e) {
     e.preventDefault();
     setErrorMsg("");
     setIsloading(true);
 
     const { email, password } = e.target.elements;
-    const url = `${REACT_APP_API_BASE_URL}/users/auth`;
+    const url = `/api/users/auth`;
 
     fetch(url, {
       method: "POST",
@@ -88,7 +99,15 @@ export default function UserLoginPage() {
             storeJWT(json);
             navigate("/user-area/dashboard");
           });
-        } else if (400 <= res.status && res.status < 500) {
+        } else if (res.status === 400) {
+          res.json().then((json) => {
+            if (json["validationErrors"] != null) {
+              setErrorMsg(
+                json["validationErrors"].map((e) => e["error"]).join(",\n")
+              );
+            }
+          });
+        } else if (res.status === 401) {
           throw new Error("Incorrect credentials");
         } else if (500 <= res.status && res.status < 600) {
           throw new Error("Server error. Please try again later.");
@@ -105,7 +124,7 @@ export default function UserLoginPage() {
   }
 
   function storeJWT(response) {
-    setCookie(REACT_APP_JWT_TOKEN_KEY, response["accessToken"], {
+    setCookie(JWT_COOKIE_KEY, response["accessToken"], {
       path: "/",
       sameSite: "strict",
     });

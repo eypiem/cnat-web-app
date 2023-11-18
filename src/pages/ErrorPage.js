@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * This component represents the "resource not found" page.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function ErrorPage() {
   useEffect(() => {
     document.title = "CNAT | Page Not Found";

@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
+/**
+ * This component displays a button used for deleting the tracker with the provided trackerId.
+ * The onDelete callback is used to notify of the deletion the the tracker.
+ *
+ * @author Amir Parsa Mahdian
+ */
 export default function TrackerDeleteButton({ trackerId, onDeleted }) {
-  const { REACT_APP_API_BASE_URL } = process.env;
   const { token } = useOutletContext();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -26,11 +31,14 @@ export default function TrackerDeleteButton({ trackerId, onDeleted }) {
     </>
   );
 
+  /**
+   * Sends a tracker delete request and calls the onDelete callback if successful.
+   */
   function deleteTracker() {
     setIsDeleting(true);
     setDeleteErrorMsg("");
 
-    const url = `${REACT_APP_API_BASE_URL}/trackers/${trackerId}`;
+    const url = `/api/trackers/${trackerId}`;
 
     fetch(url, {
       method: "DELETE",

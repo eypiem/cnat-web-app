@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta16
+kind: Config
+metadata:
+  name: cnat-web-app-skaffold
+build:
+  artifacts:
+    - image: cnat-web-app
+      context: ./
+deploy:
+  kubectl:
+    manifests:
+      - k8s/k8s-cnat-web-app.yaml
